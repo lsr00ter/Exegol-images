@@ -283,7 +283,7 @@ function install_patator() {
     cd /opt/tools/patator || exit
     python3.13 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
-    pip3 install -r requirements.txt
+    grep -v cx_Oracle requirements.txt | pip3 install -r /dev/stdin
     deactivate
     add-aliases patator
     add-history patator
