@@ -291,8 +291,13 @@ function install_neovim() {
 function install_mdcat() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing mdcat"
-    source "$HOME/.cargo/env"
-    cargo binstall -y mdcat
+    local mdcat_version="2.7.1"
+    local url="https://github.com/swsnr/mdcat/releases/download/mdcat-${mdcat_version}/mdcat-${mdcat_version}-x86_64-unknown-linux-gnu.tar.gz"
+    wget -O /tmp/mdcat.tar.gz "$url"
+    tar -xzf /tmp/mdcat.tar.gz -C /tmp/
+    mv "/tmp/mdcat-${mdcat_version}-x86_64-unknown-linux-gnu/mdcat" /usr/local/bin/mdcat
+    chmod +x /usr/local/bin/mdcat
+    rm -rf /tmp/mdcat.tar.gz "/tmp/mdcat-${mdcat_version}-x86_64-unknown-linux-gnu"
     add-history mdcat
     add-test-command "mdcat --version"
     add-to-list "mdcat,https://github.com/swsnr/mdcat,Fancy cat for Markdown"
