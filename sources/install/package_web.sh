@@ -24,7 +24,7 @@ function install_web_apt_tools() {
 function install_weevely() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing weevely"
-    pipx install --python 3.13 --system-site-packages git+https://github.com/epinna/weevely3
+    pipx install --python 3.13 --system-site-packages git+https://github.com/epinna/weevely3@${WEEVELY3_VERSION}
     add-history weevely
     add-test-command "weevely --help"
     add-to-list "weevely,https://github.com/epinna/weevely3,a webshell designed for post-exploitation purposes that can be extended over the network at runtime."
@@ -32,7 +32,7 @@ function install_weevely() {
 
 function install_whatweb() {
     colorecho "Installing whatweb"
-    git -C /opt/tools clone --depth 1 https://github.com/urbanadventurer/WhatWeb.git
+    git -C /opt/tools clone --branch "${WHATWEB_VERSION}" --depth 1 https://github.com/urbanadventurer/WhatWeb.git
     rvm use 3.2.2@whatweb --create
     gem install addressable
     bundle install --gemfile /opt/tools/WhatWeb/Gemfile
@@ -51,7 +51,7 @@ function install_wfuzz() {
     fapt libcurl4-openssl-dev libssl-dev
     #pip3 install pycurl wfuzz  # uncomment when issue is fix
     mkdir /usr/share/wfuzz
-    git -C /tmp clone --depth 1 https://github.com/xmendez/wfuzz.git
+    git -C /tmp clone --branch "${WFUZZ_VERSION}" --depth 1 https://github.com/xmendez/wfuzz.git
     # Wait for fix / PR to be merged: https://github.com/xmendez/wfuzz/issues/366
     local temp_fix_limit="2026-06-10"
     if check_temp_fix_expiry "$temp_fix_limit"; then
@@ -70,7 +70,7 @@ function install_wfuzz() {
 function install_gobuster() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing gobuster"
-    go install -v github.com/OJ/gobuster/v3@latest
+    go install -v github.com/OJ/gobuster/v3@${GOBUSTER_VERSION}
     asdf reshim golang
     add-history gobuster
     add-test-command "gobuster --help"
@@ -80,7 +80,7 @@ function install_gobuster() {
 function install_kiterunner() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing kiterunner (kr)"
-    git -C /opt/tools/ clone --depth 1 https://github.com/assetnote/kiterunner.git
+    git -C /opt/tools/ clone --branch "${KITERUNNER_VERSION}" --depth 1 https://github.com/assetnote/kiterunner.git
     cd /opt/tools/kiterunner || exit
     wget https://wordlists-cdn.assetnote.io/data/kiterunner/routes-large.kite.tar.gz
     wget https://wordlists-cdn.assetnote.io/data/kiterunner/routes-small.kite.tar.gz
@@ -94,7 +94,7 @@ function install_kiterunner() {
 function install_amass() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Amass"
-    go install -v github.com/owasp-amass/amass/v3/...@master
+    go install -v github.com/owasp-amass/amass/v3/...@${AMASS_VERSION}
     asdf reshim golang
     add-history amass
     add-test-command "amass -version"
@@ -115,7 +115,7 @@ function install_ffuf() {
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
     local ffuf_url
-    ffuf_url=$(curl --location --silent "https://api.github.com/repos/ffuf/ffuf/releases/latest" | grep 'browser_download_url.*ffuf.*linux_'"$arch"'.tar.gz"' | grep -o 'https://[^"]*')
+    ffuf_url="https://github.com/ffuf/ffuf/releases/download/${FFUF_VERSION}/ffuf_${FFUF_VERSION#v}_linux_${arch}.tar.gz"
     curl --location -o /tmp/ffuf.tar.gz "$ffuf_url"
     tar -xf /tmp/ffuf.tar.gz --directory /opt/tools/bin/
     add-history ffuf
@@ -125,7 +125,7 @@ function install_ffuf() {
 
 function install_dirsearch() {
     colorecho "Installing dirsearch"
-    git -C /opt/tools/ clone --depth 1 https://github.com/maurosoria/dirsearch
+    git -C /opt/tools/ clone --branch "${DIRSEARCH_VERSION}" --depth 1 https://github.com/maurosoria/dirsearch
     cd /opt/tools/dirsearch || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -168,7 +168,7 @@ function install_gopherus() {
 function install_nosqlmap() {
     # CODE-CHECK-WHITELIST=add-history
     colorecho "Installing NoSQLMap"
-    git -C /opt/tools clone --depth 1 https://github.com/codingo/NoSQLMap.git
+    git -C /opt/tools clone --branch "${NOSQLMAP_VERSION}" --depth 1 https://github.com/codingo/NoSQLMap.git
     cd /opt/tools/NoSQLMap || exit
     virtualenv --python python2 ./venv
     sed -i 's/requests==2\.32\.4/requests==2.27.1/' setup.py
@@ -185,7 +185,7 @@ function install_nosqlmap() {
 
 function install_xsstrike() {
     colorecho "Installing XSStrike"
-    git -C /opt/tools/ clone --depth 1 https://github.com/s0md3v/XSStrike.git
+    git -C /opt/tools/ clone --branch "${XSSTRIKE_VERSION}" --depth 1 https://github.com/s0md3v/XSStrike.git
     cd /opt/tools/XSStrike || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -200,7 +200,7 @@ function install_xsstrike() {
 function install_xspear() {
     colorecho "Installing XSpear"
     rvm use 3.2.2@xspear --create
-    gem install XSpear
+    gem install XSpear -v "${XSPEAR_VERSION}"
     rvm use 3.2.2@default
     add-aliases XSpear
     add-history XSpear
@@ -210,7 +210,7 @@ function install_xspear() {
 
 function install_xsser() {
     colorecho "Installing xsser"
-    git -C /opt/tools clone --depth 1 https://github.com/epsylon/xsser.git
+    git -C /opt/tools clone --branch "${XSSER_VERSION}" --depth 1 https://github.com/epsylon/xsser.git
     cd /opt/tools/xsser || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -225,7 +225,7 @@ function install_xsser() {
 function install_xsrfprobe() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing XSRFProbe"
-    pipx install --system-site-packages git+https://github.com/0xInfection/XSRFProbe
+    pipx install --system-site-packages git+https://github.com/0xInfection/XSRFProbe@${XSRFPROBE_VERSION}
     add-history xsrfprobe
     add-test-command "xsrfprobe --help"
     add-to-list "xsrfprobe,https://github.com/0xInfection/XSRFProbe,a tool for detecting and exploiting Cross-Site Request Forgery (CSRF) vulnerabilities"
@@ -233,7 +233,7 @@ function install_xsrfprobe() {
 
 function install_bolt() {
     colorecho "Installing Bolt"
-    git -C /opt/tools/ clone --depth 1 https://github.com/s0md3v/Bolt.git
+    git -C /opt/tools/ clone --branch "${BOLT_VERSION}" --depth 1 https://github.com/s0md3v/Bolt.git
     cd /opt/tools/Bolt || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -249,7 +249,7 @@ function install_kadimus() {
     colorecho "Installing kadimus"
     # TODO : Check if deps are already installed
     fapt libcurl4-openssl-dev libpcre3-dev libssh-dev
-    git -C /opt/tools/ clone --depth 1 https://github.com/P0cL4bs/Kadimus
+    git -C /opt/tools/ clone --branch "${KADIMUS_VERSION}" --depth 1 https://github.com/P0cL4bs/Kadimus
     cd /opt/tools/Kadimus || exit
     make -j
     add-aliases kadimus
@@ -260,7 +260,7 @@ function install_kadimus() {
 
 function install_fuxploider() {
     colorecho "Installing fuxploider"
-    git -C /opt/tools/ clone --depth 1 https://github.com/almandin/fuxploider.git
+    git -C /opt/tools/ clone --branch "${FUXPLOIDER_VERSION}" --depth 1 https://github.com/almandin/fuxploider.git
     cd /opt/tools/fuxploider || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -275,7 +275,7 @@ function install_fuxploider() {
 function install_patator() {
     colorecho "Installing patator"
     fapt libmariadb-dev libcurl4-openssl-dev libssl-dev ldap-utils libpq-dev ike-scan unzip default-jdk libsqlite3-dev libsqlcipher-dev
-    git -C /opt/tools clone --depth 1 https://github.com/lanjelot/patator.git
+    git -C /opt/tools clone --branch "${PATATOR_VERSION}" --depth 1 https://github.com/lanjelot/patator.git
     cd /opt/tools/patator || exit
     python3.13 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -295,7 +295,7 @@ function install_patator() {
 
 function install_joomscan() {
     colorecho "Installing joomscan"
-    git -C /opt/tools/ clone --depth 1 https://github.com/rezasp/joomscan
+    git -C /opt/tools/ clone --branch "${JOOMSCAN_VERSION}" --depth 1 https://github.com/rezasp/joomscan
     add-aliases joomscan
     add-history joomscan
     add-test-command "joomscan --version"
@@ -305,7 +305,7 @@ function install_joomscan() {
 function install_wpscan() {
     colorecho "Installing wpscan"
     rvm use 3.2.2@wpscan --create
-    gem install wpscan
+    gem install wpscan -v "${WPSCAN_VERSION}"
     rvm use 3.2.2@default
     add-aliases wpscan
     add-history wpscan
@@ -316,7 +316,7 @@ function install_wpscan() {
 function install_droopescan() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing droopescan"
-    pipx install --system-site-packages git+https://github.com/droope/droopescan.git
+    pipx install --system-site-packages git+https://github.com/droope/droopescan.git@${DROOPESCAN_VERSION}
     add-history droopescan
     add-test-command "droopescan --help"
     add-to-list "droopescan,https://github.com/droope/droopescan,Scan Drupal websites for vulnerabilities."
@@ -324,7 +324,7 @@ function install_droopescan() {
 
 function install_drupwn() {
     colorecho "Installing drupwn"
-    git -C /opt/tools/ clone --depth 1 https://github.com/immunIT/drupwn
+    git -C /opt/tools/ clone --branch "${DRUPWN_VERSION}" --depth 1 https://github.com/immunIT/drupwn
     cd /opt/tools/drupwn || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -352,7 +352,7 @@ function install_cmsmap() {
 
 function install_moodlescan() {
     colorecho "Installing moodlescan"
-    git -C /opt/tools/ clone --depth 1 https://github.com/inc0d3/moodlescan.git
+    git -C /opt/tools/ clone --branch "${MOODLESCAN_VERSION}" --depth 1 https://github.com/inc0d3/moodlescan.git
     cd /opt/tools/moodlescan || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -394,7 +394,7 @@ function install_cloudfail() {
 
 function install_eyewitness() {
     colorecho "Installing EyeWitness"
-    git -C /opt/tools/ clone --depth 1 https://github.com/FortyNorthSecurity/EyeWitness
+    git -C /opt/tools/ clone --branch "${EYEWITNESS_VERSION}" --depth 1 https://github.com/FortyNorthSecurity/EyeWitness
     cd /opt/tools/EyeWitness || exit
     fapt jq cmake xvfb chromium chromium-driver
     python3 -m venv --system-site-packages ./venv
@@ -409,7 +409,7 @@ function install_eyewitness() {
 
 function install_oneforall() {
     colorecho "Installing OneForAll"
-    git -C /opt/tools/ clone --depth 1 https://github.com/shmilylty/OneForAll.git
+    git -C /opt/tools/ clone --branch "${ONEFORALL_VERSION}" --depth 1 https://github.com/shmilylty/OneForAll.git
     cd /opt/tools/OneForAll || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -424,7 +424,7 @@ function install_oneforall() {
 function install_wafw00f() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing wafw00f"
-    pipx install --system-site-packages wafw00F
+    pipx install --system-site-packages wafw00F==${WAFW00F_VERSION}
     add-history wafw00f
     add-test-command "wafw00f --help"
     add-to-list "wafw00f,https://github.com/EnableSecurity/wafw00f,a Python tool that helps to identify and fingerprint web application firewall (WAF) products."
@@ -432,7 +432,7 @@ function install_wafw00f() {
 
 function install_corscanner() {
     colorecho "Installing CORScanner"
-    git -C /opt/tools/ clone --depth 1 https://github.com/chenjj/CORScanner.git
+    git -C /opt/tools/ clone --branch "${CORSCANNER_VERSION}" --depth 1 https://github.com/chenjj/CORScanner.git
     cd /opt/tools/CORScanner || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -447,7 +447,7 @@ function install_corscanner() {
 function install_hakrawler() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing hakrawler"
-    go install -v github.com/hakluke/hakrawler@latest
+    go install -v github.com/hakluke/hakrawler@${HAKRAWLER_VERSION}
     asdf reshim golang
     add-history hakrawler
     add-test-command "hakrawler --help"
@@ -457,7 +457,7 @@ function install_hakrawler() {
 function install_gowitness() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing gowitness"
-    go install -v github.com/sensepost/gowitness@latest
+    go install -v github.com/sensepost/gowitness@${GOWITNESS_VERSION}
     asdf reshim golang
     add-history gowitness
     add-test-command "gowitness --help"
@@ -482,7 +482,7 @@ function install_linkfinder() {
 function install_timing_attack() {
     colorecho "Installing timing_attack"
     rvm use 3.2.2@timing_attack --create
-    gem install timing_attack
+    gem install timing_attack -v "${TIMING_ATTACK_VERSION}"
     rvm use 3.2.2@default
     add-aliases timing_attack
     add-history timing_attack
@@ -493,7 +493,7 @@ function install_timing_attack() {
 function install_updog() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing updog"
-    pipx install --system-site-packages updog
+    pipx install --system-site-packages updog==${UPDOG_VERSION}
     add-history updog
     add-test-command "updog --help"
     add-to-list "updog,https://github.com/sc0tfree/updog,Simple replacement for Python's SimpleHTTPServer."
@@ -501,7 +501,7 @@ function install_updog() {
 
 function install_jwt_tool() {
     colorecho "Installing JWT tool"
-    git -C /opt/tools/ clone --depth 1 https://github.com/ticarpi/jwt_tool
+    git -C /opt/tools/ clone --branch "${JWT_TOOL_VERSION}" --depth 1 https://github.com/ticarpi/jwt_tool
     cd /opt/tools/jwt_tool || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -525,7 +525,7 @@ function install_jwt_tool() {
 function install_wuzz() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing wuzz"
-    go install -v github.com/asciimoo/wuzz@latest
+    go install -v github.com/asciimoo/wuzz@${WUZZ_VERSION}
     asdf reshim golang
     add-history wuzz
     add-test-command "wuzz --help"
@@ -535,7 +535,7 @@ function install_wuzz() {
 function install_git-dumper() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing git-dumper"
-    pipx install --system-site-packages git-dumper
+    pipx install --system-site-packages git-dumper==${GIT_DUMPER_VERSION}
     add-history git-dumper
     add-test-command "git-dumper --help"
     add-to-list "git-dumper,https://github.com/arthaud/git-dumper,Small script to dump a Git repository from a website."
@@ -543,7 +543,7 @@ function install_git-dumper() {
 
 function install_gittools() {
     colorecho "Installing GitTools"
-    git -C /opt/tools/ clone --depth 1 https://github.com/internetwache/GitTools.git
+    git -C /opt/tools/ clone --branch "${GITTOOLS_VERSION}" --depth 1 https://github.com/internetwache/GitTools.git
     cd /opt/tools/GitTools/Finder || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -560,7 +560,7 @@ function install_gittools() {
 function install_ysoserial() {
     colorecho "Installing ysoserial"
     mkdir /opt/tools/ysoserial/
-    wget -O /opt/tools/ysoserial/ysoserial.jar "https://github.com/frohoff/ysoserial/releases/latest/download/ysoserial-all.jar"
+    wget -O /opt/tools/ysoserial/ysoserial.jar "https://github.com/frohoff/ysoserial/releases/download/${YSOSERIAL_VERSION}/ysoserial-all.jar"
     add-aliases ysoserial
     add-history ysoserial
     add-test-command "ysoserial --help|& grep 'spring-core:4.1.4.RELEASE'"
@@ -626,7 +626,7 @@ function install_h2csmuggler() {
 function install_byp4xx() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing byp4xx"
-    go install -v github.com/lobuhi/byp4xx@latest
+    go install -v github.com/lobuhi/byp4xx@${BYP4XX_VERSION}
     asdf reshim golang
     add-history byp4xx
     add-test-command byp4xx
@@ -650,7 +650,7 @@ function install_feroxbuster() {
 
 function install_tomcatwardeployer() {
     colorecho "Installing tomcatWarDeployer"
-    git -C /opt/tools/ clone --depth 1 https://github.com/mgeeky/tomcatWarDeployer.git
+    git -C /opt/tools/ clone --branch "${TOMCATWARDEPLOYER_VERSION}" --depth 1 https://github.com/mgeeky/tomcatWarDeployer.git
     cd /opt/tools/tomcatWarDeployer || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -664,7 +664,7 @@ function install_tomcatwardeployer() {
 
 function install_clusterd() {
     colorecho "Installing clusterd"
-    git -C /opt/tools/ clone --depth 1 https://github.com/hatRiot/clusterd.git
+    git -C /opt/tools/ clone --branch "${CLUSTERD_VERSION}" --depth 1 https://github.com/hatRiot/clusterd.git
     cd /opt/tools/clusterd || exit
     virtualenv --python python2 ./venv
     source ./venv/bin/activate
@@ -679,7 +679,7 @@ function install_clusterd() {
 function install_arjun() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing arjun"
-    pipx install --system-site-packages arjun
+    pipx install --system-site-packages arjun==${ARJUN_VERSION}
     add-history arjun
     add-test-command "arjun --help"
     add-to-list "arjun,https://github.com/s0md3v/Arjun,HTTP parameter discovery suite."
@@ -688,7 +688,7 @@ function install_arjun() {
 function install_nuclei() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Nuclei"
-    go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+    go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@${NUCLEI_VERSION}
     asdf reshim golang
     nuclei -update-templates
     add-history nuclei
@@ -699,7 +699,7 @@ function install_nuclei() {
 function install_gau() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing gau"
-    go install github.com/lc/gau/v2/cmd/gau@latest
+    go install github.com/lc/gau/v2/cmd/gau@${GAU_VERSION}
     asdf reshim golang
     add-history gau
     add-test-command "gau --help"
@@ -709,7 +709,7 @@ function install_gau() {
 function install_hakrevdns() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Hakrevdns"
-    go install -v github.com/hakluke/hakrevdns@latest
+    go install -v github.com/hakluke/hakrevdns@${HAKREVDNS_VERSION}
     asdf reshim golang
     add-history hakrevdns
     add-test-command "hakrevdns --help|& grep 'Protocol to use for lookups'"
@@ -719,7 +719,7 @@ function install_hakrevdns() {
 function install_httprobe() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing httprobe"
-    go install -v github.com/tomnomnom/httprobe@latest
+    go install -v github.com/tomnomnom/httprobe@${HTTPROBE_VERSION}
     asdf reshim golang
     add-history httprobe
     add-test-command "httprobe --help"
@@ -729,7 +729,7 @@ function install_httprobe() {
 function install_httpx() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing httpx"
-    go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+    go install -v github.com/projectdiscovery/httpx/cmd/httpx@${HTTPX_VERSION}
     asdf reshim golang
     add-history httpx
     add-test-command "httpx --help"
@@ -739,7 +739,7 @@ function install_httpx() {
 function install_alterx() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing alterx"
-    go install -v github.com/projectdiscovery/alterx/cmd/alterx@latest
+    go install -v github.com/projectdiscovery/alterx/cmd/alterx@${ALTERX_VERSION}
     asdf reshim golang
     add-history alterx
     add-test-command "alterx --help"
@@ -749,7 +749,7 @@ function install_alterx() {
 function install_chaos() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing chaos"
-    go install -v github.com/projectdiscovery/chaos-client/cmd/chaos@latest
+    go install -v github.com/projectdiscovery/chaos-client/cmd/chaos@${CHAOS_CLIENT_VERSION}
     asdf reshim golang
     add-history chaos
     add-test-command "chaos --help"
@@ -759,7 +759,7 @@ function install_chaos() {
 function install_uncover() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing uncover"
-    go install -v github.com/projectdiscovery/uncover/cmd/uncover@latest
+    go install -v github.com/projectdiscovery/uncover/cmd/uncover@${UNCOVER_VERSION}
     asdf reshim golang
     add-history uncover
     add-test-command "uncover --help"
@@ -769,7 +769,7 @@ function install_uncover() {
 function install_anew() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing anew"
-    go install -v github.com/tomnomnom/anew@latest
+    go install -v github.com/tomnomnom/anew@${ANEW_VERSION}
     asdf reshim golang
     add-history anew
     add-test-command "anew --help"
@@ -779,7 +779,7 @@ function install_anew() {
 function install_robotstester() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Robotstester"
-    pipx install --system-site-packages git+https://github.com/p0dalirius/robotstester
+    pipx install --system-site-packages "git+https://github.com/p0dalirius/robotstester@${ROBOTSTESTER_VERSION}"
     add-history robotstester
     add-test-command "robotstester --help"
     add-to-list "robotstester,https://github.com/p0dalirius/robotstester,Utility for testing whether a website's robots.txt file is correctly configured."
@@ -789,7 +789,7 @@ function install_naabu() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing naabu"
     fapt libpcap-dev
-    go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
+    go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@${NAABU_VERSION}
     asdf reshim golang
     add-history naabu
     add-test-command "naabu --help"
@@ -841,7 +841,7 @@ function install_php_filter_chain_generator() {
 
 function install_kraken() {
     colorecho "Installing Kraken"
-    git -C /opt/tools clone --depth 1 --recursive --shallow-submodules https://github.com/kraken-ng/Kraken.git
+    git -C /opt/tools clone --branch "${KRAKEN_VERSION}" --depth 1 --recursive --shallow-submodules https://github.com/kraken-ng/Kraken.git
     cd /opt/tools/Kraken || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -867,7 +867,7 @@ function install_soapui() {
 function install_sqlmap() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing sqlmap"
-    git -C /opt/tools/ clone --depth 1 https://github.com/sqlmapproject/sqlmap.git
+    git -C /opt/tools/ clone --branch "${SQLMAP_VERSION}" --depth 1 https://github.com/sqlmapproject/sqlmap.git
     ln -s "/opt/tools/sqlmap/sqlmap.py" /opt/tools/bin/sqlmap
     add-history sqlmap
     add-test-command "sqlmap --version"
@@ -877,7 +877,7 @@ function install_sqlmap() {
 function install_sslscan() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing sslscan"
-    git -C /tmp clone --depth 1 https://github.com/rbsec/sslscan.git
+    git -C /tmp clone --branch "${SSLSCAN_VERSION}" --depth 1 https://github.com/rbsec/sslscan.git
     cd /tmp/sslscan || exit
     make static
     mv /tmp/sslscan/sslscan /opt/tools/bin/sslscan
@@ -889,7 +889,7 @@ function install_sslscan() {
 function install_jsluice() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing jsluice"
-    go install -v github.com/BishopFox/jsluice/cmd/jsluice@latest
+    go install -v github.com/BishopFox/jsluice/cmd/jsluice@${JSLUICE_VERSION}
     asdf reshim golang
     add-history jsluice
     add-test-command "jsluice --help"
@@ -899,7 +899,7 @@ function install_jsluice() {
 function install_katana() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing katana"
-    go install -v github.com/projectdiscovery/katana/cmd/katana@latest
+    go install -v github.com/projectdiscovery/katana/cmd/katana@${KATANA_VERSION}
     asdf reshim golang
     add-history katana
     add-test-command "katana --help"
@@ -931,7 +931,7 @@ function install_postman() {
 function install_wpprobe() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing wpprobe"
-    go install -v github.com/Chocapikk/wpprobe@latest
+    go install -v github.com/Chocapikk/wpprobe@${WPPROBE_VERSION}
     asdf reshim golang
     add-history wpprobe
     add-test-command "wpprobe --help"
@@ -980,7 +980,7 @@ function install_token_exploiter() {
 function install_bbot() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing BBOT"
-    pipx install --system-site-packages bbot
+    pipx install --system-site-packages bbot==${BBOT_VERSION}
     add-history bbot
     add-test-command "bbot --help"
     add-to-list "BBOT,https://github.com/blacklanternsecurity/bbot,BEE·bot is a multipurpose scanner inspired by Spiderfoot built to automate your Recon and ASM."
@@ -1024,7 +1024,7 @@ function install_curlie() {
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
     local URL
-    URL=$(curl --location --silent "https://api.github.com/repos/rs/curlie/releases/latest" | grep 'browser_download_url.*curlie.*linux.*'"$arch"'.*tar.gz"' | grep -o 'https://[^"]*')
+    URL="https://github.com/rs/curlie/releases/download/${CURLIE_VERSION}/curlie_${CURLIE_VERSION#v}_linux_${arch}.tar.gz"
     curl --location -o /tmp/curlie.tar.gz "$URL"
     tar -zxf /tmp/curlie.tar.gz --directory /tmp curlie
     rm /tmp/curlie.tar.gz
@@ -1128,7 +1128,7 @@ function package_web() {
     install_token_exploiter         # Github personal token Analyzer
     install_bbot                    # Recursive Scanner
     install_subzy                   # Subdomain takeover tool
-    install_urldedupe               # Get back a list of deduplicated (unique) URL and query string combination. 
+    install_urldedupe               # Get back a list of deduplicated (unique) URL and query string combination.
     install_curlie                  # Mix of cURL and HTTPie
     install_xxeinjector             # XXE injection testing tool
     post_install

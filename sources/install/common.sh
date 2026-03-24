@@ -100,6 +100,12 @@ function set_build_only_env(){
     export WGETRC="/root/sources/assets/shells/wgetrc"
 }
 
+function set_tool_versions() {
+    colorecho "Loading pinned tool versions"
+    # shellcheck source=tool-versions.env
+    source "$(dirname "${BASH_SOURCE[0]}")/tool-versions.env"
+}
+
 function set_env() {
     colorecho "Setting env (caller)"
     set_bin_path
@@ -108,6 +114,7 @@ function set_env() {
     set_python_env
     set_asdf_env
     set_build_only_env
+    set_tool_versions
 }
 
 ### Catch & retry definitions
@@ -213,7 +220,7 @@ function post_build() {
     colorecho "Removing comments from zsh_history"
     grep -v '^#' /opt/.exegol_history > /tmp/.exegol_history.filtered
     mv /tmp/.exegol_history.filtered /opt/.exegol_history
-    
+
     colorecho "Adding end-of-preset in zsh_history"
     echo "# -=-=-=-=-=-=-=- YOUR COMMANDS BELOW -=-=-=-=-=-=-=- #" >> /opt/.exegol_history
     cp /opt/.exegol_history ~/.zsh_history

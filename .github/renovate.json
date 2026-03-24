@@ -1,0 +1,73 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "UTC",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies", "tools-update"],
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 10,
+  "enabledManagers": ["dockerfile", "github-actions", "pip_requirements", "custom.regex"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["^sources/install/tool-versions\\.env$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n[A-Z0-9_]+_VERSION=\"?(?<currentValue>[^\"\\s]+)\"?"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Group all GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Group all Dockerfile base image updates",
+      "matchManagers": ["dockerfile"],
+      "groupName": "docker-base-images"
+    },
+    {
+      "description": "Group all Go tool updates",
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["github-releases", "github-tags"],
+      "matchFileNames": ["sources/install/tool-versions.env"],
+      "groupName": "go-tools",
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "description": "Group all Cargo crate updates",
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["crate"],
+      "groupName": "cargo-tools"
+    },
+    {
+      "description": "Group all PyPI package updates",
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["pypi"],
+      "groupName": "pypi-tools"
+    },
+    {
+      "description": "Group all RubyGems package updates",
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["rubygems"],
+      "groupName": "rubygems-tools"
+    },
+    {
+      "description": "Group all NPM package updates",
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["npm"],
+      "groupName": "npm-tools"
+    },
+    {
+      "description": "Group all Python requirement updates",
+      "matchManagers": ["pip_requirements"],
+      "groupName": "python-requirements"
+    },
+    {
+      "description": "Auto-merge patch updates for well-known tools",
+      "matchUpdateTypes": ["patch"],
+      "automerge": false
+    }
+  ]
+}

@@ -39,7 +39,7 @@ function install_binwalk() {
 function install_volatility2() {
     colorecho "Installing volatility"
     fapt pcregrep yara libjpeg-dev zlib1g-dev
-    git -C /opt/tools/ clone --depth 1 https://github.com/volatilityfoundation/volatility
+    git -C /opt/tools/ clone --branch "${VOLATILITY2_VERSION}" --depth 1 https://github.com/volatilityfoundation/volatility
     cd /opt/tools/volatility || exit
     virtualenv --python python2 ./venv
     source ./venv/bin/activate
@@ -58,7 +58,7 @@ function install_volatility2() {
 
 function install_volatility3() {
     colorecho "Installing volatility3"
-    pipx install --system-site-packages git+https://github.com/volatilityfoundation/volatility3
+    pipx install --system-site-packages git+https://github.com/volatilityfoundation/volatility3@${VOLATILITY3_VERSION}
     # We are using the full path of 'pipx', because otherwise our catch and retry mechanism mess with the command
     # https://github.com/volatilityfoundation/volatility3/blob/bd5fb7d61148afef031faade3efe68dcb012d95a/pyproject.toml#L23
     /root/.pyenv/shims/pipx inject volatility3 'yara-python>=4.5.1,<5' 'capstone>=5.0.3,<6' 'pycryptodome>=3.21.0,<4' 'leechcorepyc>=2.19.2,<3; sys_platform != "darwin"' 'pillow>=10.0.0,<11.0.0'
@@ -100,7 +100,7 @@ function install_jadx() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing jadx"
     local jadx_url
-    jadx_url=$(curl --location --silent "https://api.github.com/repos/skylot/jadx/releases/latest" | grep 'browser_download_url.' | grep -o 'https://[^"]*' | head -n1)
+    jadx_url="https://github.com/skylot/jadx/releases/download/${JADX_VERSION}/jadx-${JADX_VERSION#v}-no-jre-all.zip"
     curl --location -o /tmp/jadx.zip "$jadx_url"
     unzip -q /tmp/jadx.zip -d /opt/tools/jadx
     chmod +x /opt/tools/jadx/bin/jadx /opt/tools/jadx/bin/jadx-gui
@@ -115,7 +115,7 @@ function install_chainsaw() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing chainsaw"
     source "$HOME/.cargo/env"
-    git -C /opt/tools/ clone --depth 1 https://github.com/WithSecureLabs/chainsaw.git
+    git -C /opt/tools/ clone --branch "${CHAINSAW_VERSION}" --depth 1 https://github.com/WithSecureLabs/chainsaw.git
     cd /opt/tools/chainsaw || exit
     cargo build --release
     ln -v -s /opt/tools/chainsaw/target/release/chainsaw /opt/tools/bin/chainsaw
@@ -129,7 +129,7 @@ function install_chainsaw() {
 function install_oletools() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing oletools"
-    pipx install --system-site-packages oletools
+    pipx install --system-site-packages oletools==${OLETOOLS_VERSION}
     add-history oletools
     add-test-command "olevba --help"
     add-to-list "oletools,https://github.com/decalage2/oletools,python tools to analyze MS OLE2 files and MS Office documents - for malware analysis - forensics and debugging."

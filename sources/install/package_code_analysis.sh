@@ -6,7 +6,7 @@ source common.sh
 function install_brakeman() {
     colorecho "Installing Brakeman"
     rvm use 3.2.2@brakeman --create
-    gem install brakeman
+    gem install brakeman -v "${BRAKEMAN_VERSION}"
     rvm use 3.2.2@default
     add-aliases brakeman
     add-history brakeman
@@ -17,7 +17,7 @@ function install_brakeman() {
 function install_semgrep() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing semgrep"
-    pipx install --system-site-packages semgrep
+    pipx install --system-site-packages semgrep==${SEMGREP_VERSION}
     add-history semgrep
     add-test-command "semgrep --help"
     add-to-list "semgrep,https://github.com/returntocorp/semgrep/,Static analysis tool that supports multiple languages and can find a variety of vulnerabilities and coding errors."
@@ -29,7 +29,7 @@ function install_pp-finder() {
     # https://github.com/yeswehack/pp-finder/issues/2
     source ~/.nvm/nvm.sh
     nvm use default
-    npm install -g pp-finder
+    npm install -g pp-finder@"${PP_FINDER_VERSION}"
     add-history pp-finder
     add-test-command "npm ls -g|grep pp-finder"
     add-to-list "pp-finder,https://github.com/yeswehack/pp-finder,Prototype pollution finder tool for javascript. pp-finder lets you find prototype pollution candidates in your code."
@@ -48,7 +48,7 @@ function install_gitleaks() {
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
     local gitleaks_url
-    gitleaks_url=$(curl --location --silent "https://api.github.com/repos/gitleaks/gitleaks/releases/latest" | grep 'browser_download_url.*gitleaks.*linux_'"$arch"'.*tar.gz"' | grep -o 'https://[^"]*')
+    gitleaks_url="https://github.com/gitleaks/gitleaks/releases/download/${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION#v}_linux_${arch}.tar.gz"
     curl --location -o /tmp/gitleaks.tar.gz "$gitleaks_url"
     tar -xf /tmp/gitleaks.tar.gz --directory /tmp
     rm /tmp/gitleaks.tar.gz
@@ -71,7 +71,7 @@ function install_trufflehog() {
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
     local download_url
-    download_url=$(curl --location --silent "https://api.github.com/repos/trufflesecurity/trufflehog/releases/latest" | grep 'browser_download_url' | grep -o 'https://[^"]*' | grep 'linux' | grep "$arch")
+    download_url="https://github.com/trufflesecurity/trufflehog/releases/download/${TRUFFLEHOG_VERSION}/trufflehog_${TRUFFLEHOG_VERSION#v}_linux_${arch}.tar.gz"
     echo "Downloading $download_url"
     curl --location -o /tmp/trufflehog.tar.gz "$download_url"
     tar -xf /tmp/trufflehog.tar.gz --directory /tmp

@@ -22,7 +22,7 @@ function install_cewl() {
     colorecho "Installing cewl"
     rvm use 3.1.2@cewl --create # currently does not support a version higher than 3.1.2
     gem install mime mime-types mini_exiftool nokogiri rubyzip spider
-    git -C /opt/tools clone --depth 1 https://github.com/digininja/CeWL.git
+    git -C /opt/tools clone --branch "${CEWL_GIT_VERSION}" --depth 1 https://github.com/digininja/CeWL.git
     bundle install --gemfile /opt/tools/CeWL/Gemfile
     rvm use 3.2.2@default
     add-aliases cewl
@@ -34,7 +34,7 @@ function install_cewl() {
 function install_cewler() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing cewler"
-    pipx install --system-site-packages cewler
+    pipx install --system-site-packages cewler==${CEWLER_VERSION}
     add-history cewler
     add-test-command "cewler --help"
     add-to-list "cewler,https://github.com/roys/cewler,CeWL alternative in Python"
@@ -60,7 +60,7 @@ function install_seclists() {
 function install_pass_station() {
     colorecho "Installing Pass Station"
     rvm use 3.1.2@pass-station --create # currently does not support a version higher than 3.1.2
-    gem install pass-station
+    gem install pass-station -v "${PASS_STATION_VERSION}"
     rvm use 3.1.2@default
     add-aliases pass-station
     add-history pass-station
@@ -70,7 +70,7 @@ function install_pass_station() {
 
 function install_username-anarchy() {
     colorecho "Installing Username-Anarchy"
-    git -C /opt/tools/ clone --depth 1 https://github.com/urbanadventurer/username-anarchy
+    git -C /opt/tools/ clone --branch "${USERNAME_ANARCHY_VERSION}" --depth 1 https://github.com/urbanadventurer/username-anarchy
     add-aliases username-anarchy
     add-history username-anarchy
     add-test-command "username-anarchy --help"

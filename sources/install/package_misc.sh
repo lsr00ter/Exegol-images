@@ -27,7 +27,7 @@ function install_misc_apt_tools() {
 function install_goshs() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing goshs"
-    go install -v github.com/patrickhener/goshs@latest
+    go install -v github.com/patrickhener/goshs@${GOSHS_VERSION}
     asdf reshim golang
     add-history goshs
     add-test-command "goshs -v"
@@ -54,7 +54,7 @@ function install_uberfile() {
 
 function install_aliasr() {
     colorecho "Installing aliasr"
-    pipx install --system-site-packages git+https://github.com/Mojo8898/aliasr
+    pipx install --system-site-packages git+https://github.com/Mojo8898/aliasr@${ALIASR_VERSION}
     add-aliases aliasr
     add-history aliasr
     add-test-command "aliasr --help"
@@ -64,7 +64,7 @@ function install_aliasr() {
 function install_whatportis() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing whatportis"
-    pipx install --system-site-packages whatportis
+    pipx install --system-site-packages whatportis==${WHATPORTIS_VERSION}
     # TODO : FIX : "port": port[1] if port[1] else "---",list index out of range - cli.py
     # echo y | whatportis --update
     add-history whatportis
@@ -141,7 +141,7 @@ function install_ngrok() {
 function install_objectwalker() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing objectwalker"
-    pipx install --system-site-packages git+https://github.com/p0dalirius/objectwalker
+    pipx install --system-site-packages git+https://github.com/p0dalirius/objectwalker@${OBJECTWALKER_VERSION}
     add-history objectwalker
     add-test-command "objectwalker --help"
     add-to-list "objectwalker,https://github.com/p0dalirius/objectwalker,A python module to explore the object tree to extract paths to interesting objects in memory."
@@ -150,7 +150,7 @@ function install_objectwalker() {
 function install_tig() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing tig"
-    git -C /tmp clone --depth 1 https://github.com/jonas/tig.git
+    git -C /tmp clone --branch "${TIG_VERSION}" --depth 1 https://github.com/jonas/tig.git
     cd /tmp/tig || exit
     make -j
     make install bindir=/opt/tools/bin sysconfdir=/etc
@@ -162,7 +162,7 @@ function install_tig() {
 function install_yt-dlp() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing yt-dlp"
-    pipx install --system-site-packages git+https://github.com/yt-dlp/yt-dlp
+    pipx install --system-site-packages git+https://github.com/yt-dlp/yt-dlp@${YT_DLP_VERSION}
     add-test-command "yt-dlp --help"
     add-to-list "yt-dlp,https://github.com/yt-dlp/yt-dlp,A youtube-dl fork with additional features and fixes"
 }
@@ -170,14 +170,8 @@ function install_yt-dlp() {
 function install_cyberchef() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing CyberChef"
-    local last_release
-    last_release=$(curl --location --silent "https://api.github.com/repos/gchq/CyberChef/releases/latest"|grep browser_download_url|awk '{print $2}'|tr -d '"')
-    echo "$last_release"
-    if [[ -z "$last_release" ]]; then
-        criticalecho-noexit "Latest release not found" && return
-    fi
     mkdir -p /opt/tools/CyberChef
-    wget "$last_release" -O /tmp/CyberChef.zip
+    wget "https://github.com/gchq/CyberChef/releases/download/${CYBERCHEF_VERSION}/CyberChef_${CYBERCHEF_VERSION}.zip" -O /tmp/CyberChef.zip
     unzip -o /tmp/CyberChef.zip -d /opt/tools/CyberChef/
     rm /tmp/CyberChef.zip
     mv /opt/tools/CyberChef/CyberChef_*.html /opt/tools/CyberChef/CyberChef.html
@@ -188,7 +182,7 @@ function install_cyberchef() {
 function install_creds() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing creds"
-    pipx install --system-site-packages git+https://github.com/ihebski/DefaultCreds-cheat-sheet
+    pipx install --system-site-packages "git+https://github.com/ihebski/DefaultCreds-cheat-sheet@${DEFAULTCREDS_VERSION}"
     add-history creds
     add-test-command "creds version"
     add-to-list "creds,https://github.com/ihebski/DefaultCreds-cheat-sheet,One place for all the default credentials to assist pentesters during an engagement. This document has several products default login/password gathered from multiple sources."
@@ -219,12 +213,10 @@ function install_wesng() {
 
 function install_glow() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
-    local url
-    local version
     colorecho "Installing glow"
-    url=$(curl --location --silent --output /dev/null --write-out "%{url_effective}" https://github.com/charmbracelet/glow/releases/latest)
-    version=${url##*v}
-    wget "https://github.com/charmbracelet/glow/releases/download/v${version}/glow_${version}_Linux_x86_64.tar.gz" -O /tmp/glow.tar.gz
+    local version
+    version=${GLOW_VERSION#v}
+    wget "https://github.com/charmbracelet/glow/releases/download/${GLOW_VERSION}/glow_${version}_Linux_x86_64.tar.gz" -O /tmp/glow.tar.gz
     tar -xvf /tmp/glow.tar.gz
     cp "glow_${version}_Linux_x86_64/glow" "/opt/tools/bin"
     rm -f /tmp/glow.tar.gz
@@ -244,7 +236,7 @@ function install_thr() {
 function install_dtrx() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing dtrx"
-    pipx install --system-site-packages dtrx
+    pipx install --system-site-packages dtrx==${DTRX_VERSION}
     add-test-command "dtrx --help"
     add-to-list "dtrx,https://github.com/dtrx-py/dtrx,Do The Right eXtraction - don't remember what set of tar flags or where to pipe the output to extract it? no worries!"
 }

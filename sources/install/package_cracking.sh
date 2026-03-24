@@ -40,7 +40,7 @@ function install_john() {
 function install_name-that-hash() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Name-That-Hash"
-    pipx install --system-site-packages name-that-hash
+    pipx install --system-site-packages name-that-hash==${NAME_THAT_HASH_VERSION}
     add-history name-that-hash
     add-test-command "nth --help"
     add-to-list "name-that-hash,https://github.com/HashPals/Name-That-Hash,Online tool for identifying hashes."
@@ -49,7 +49,7 @@ function install_name-that-hash() {
 function install_haiti() {
     colorecho "Installing haiti"
     rvm use 3.2.2@haiti --create
-    gem install haiti-hash
+    gem install haiti-hash -v "${HAITI_HASH_VERSION}"
     rvm use 3.2.2@default
     add-aliases haiti
     add-history haiti
@@ -60,7 +60,7 @@ function install_haiti() {
 function install_geowordlists() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing GeoWordlists"
-    pipx install --system-site-packages git+https://github.com/p0dalirius/GeoWordlists
+    pipx install --system-site-packages git+https://github.com/p0dalirius/GeoWordlists@${GEOWORDLISTS_VERSION}
     add-history geowordlists
     add-test-command "geowordlists --help"
     add-to-list "geowordlists,https://github.com/p0dalirius/GeoWordlists,tool to generate wordlists of passwords containing cities at a defined distance around the client city."
@@ -84,7 +84,7 @@ function install_pkcrack() {
 function install_firefox_decrypt() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing firefox_decrypt"
-    pipx install --system-site-packages git+https://github.com/unode/firefox_decrypt
+    pipx install --system-site-packages "git+https://github.com/unode/firefox_decrypt@${FIREFOX_DECRYPT_VERSION}"
     add-test-command "firefox-decrypt --help"
     add-to-list "firefox_decrypt,https://github.com/unode/firefox_decrypt,Decrypt Firefox saved passwords."
 }

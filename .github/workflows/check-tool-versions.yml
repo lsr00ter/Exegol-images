@@ -1,0 +1,63 @@
+name: Check Tool Versions
+
+on:
+  schedule:
+    # Run every Wednesday at 08:00 UTC
+    - cron: "0 8 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-versions:
+    name: Check for tool updates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check tool versions
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT=$(.github/scripts/check-tool-versions.sh) && HAS_UPDATES=true || HAS_UPDATES=false
+          if [[ "$HAS_UPDATES" == "true" ]]; then
+            # Write multiline report to GITHUB_OUTPUT
+            {
+              echo "report<<REPORT_EOF"
+              echo "$REPORT"
+              echo "REPORT_EOF"
+            } >> "$GITHUB_OUTPUT"
+            echo "has_updates=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_updates=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Close stale version-check issues
+        if: steps.check.outputs.has_updates == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Close previous auto-opened issues to avoid duplicates
+          gh issue list \
+            --label "tool-version-check" \
+            --state open \
+            --json number \
+            --jq '.[].number' \
+          | while read -r num; do
+              gh issue close "$num" --comment "Superseded by a newer version check."
+            done
+
+      - name: Create issue for updates
+        if: steps.check.outputs.has_updates == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPORT: ${{ steps.check.outputs.report }}
+        run: |
+          gh issue create \
+            --title "Tool version updates available ($(date +%Y-%m-%d))" \
+            --body "$REPORT" \
+            --label "tool-version-check,dependencies"

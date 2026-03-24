@@ -40,7 +40,7 @@ function install_network_apt_tools() {
     add-test-command "redis-cli --version"                          # Redis protocol
     add-test-command "mitmproxy --version"                          # MITMProxy
     add-test-command "fping --help"                                 # fping
-    
+
 
     add-to-list "wireshark,https://github.com/wireshark/wireshark,Wireshark is a network protocol analyzer that lets you see what’s happening on your network at a microscopic level."
     add-to-list "tshark,https://github.com/wireshark/wireshark,TShark is a terminal version of Wireshark."
@@ -63,7 +63,7 @@ function install_network_apt_tools() {
 
 function install_proxychains() {
     colorecho "Installing proxychains"
-    git -C /opt/tools/ clone --depth 1 https://github.com/rofl0r/proxychains-ng
+    git -C /opt/tools/ clone --branch "${PROXYCHAINS_NG_VERSION}" --depth 1 https://github.com/rofl0r/proxychains-ng
     cd /opt/tools/proxychains-ng || exit
     ./configure --prefix=/usr --sysconfdir=/etc
     make -j
@@ -112,7 +112,7 @@ function install_nmap-parse-output() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing nmap-parse-output"
     fapt xsltproc
-    git -C /opt/tools/ clone --depth 1 https://github.com/ernw/nmap-parse-output
+    git -C /opt/tools/ clone --branch "${NMAP_PARSE_OUTPUT_VERSION}" --depth 1 https://github.com/ernw/nmap-parse-output
     ln -s /opt/tools/nmap-parse-output/nmap-parse-output /opt/tools/bin/nmap-parse-output
     add-history nmap-parse-output
     # nmap-parse-output always exits with 1 if no argument is passed
@@ -123,7 +123,7 @@ function install_nmap-parse-output() {
 function install_udpx(){
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Install udpx"
-    go install -v github.com/nullt3r/udpx/cmd/udpx@latest
+    go install -v github.com/nullt3r/udpx/cmd/udpx@${UDPX_VERSION}
     asdf reshim golang
     add-history udpx
     add-test-command "udpx --help"
@@ -163,7 +163,7 @@ function install_dnschef() {
 function install_divideandscan() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing DivideAndScan"
-    pipx install --system-site-packages git+https://github.com/snovvcrash/DivideAndScan
+    pipx install --system-site-packages git+https://github.com/snovvcrash/DivideAndScan@${DIVIDEANDSCAN_VERSION}
     add-history divideandscan
     add-test-command "divideandscan --help"
     add-to-list "divideandscan,https://github.com/snovvcrash/divideandscan,Advanced subdomain scanner"
@@ -172,7 +172,7 @@ function install_divideandscan() {
 function install_chisel() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing chisel"
-    go install -v github.com/jpillora/chisel@latest
+    go install -v github.com/jpillora/chisel@${CHISEL_VERSION}
     asdf reshim golang
     # TODO: add windows pre-compiled binaries in /opt/ressources/windows ?
     add-history chisel
@@ -183,8 +183,8 @@ function install_chisel() {
 function install_penelope() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Penelope"
-    pipx install --system-site-packages git+https://github.com/brightio/penelope.git
-    add-history penelope 
+    pipx install --system-site-packages git+https://github.com/brightio/penelope.git@${PENELOPE_VERSION}
+    add-history penelope
     add-test-command "which penelope"
     add-to-list "penelope,https://github.com/brightio/penelope,Penelope is a shell handler designed to be easy to use and intended to replace netcat when exploiting RCE vulnerabilities."
 }
@@ -192,7 +192,7 @@ function install_penelope() {
 function install_sshuttle() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing sshtuttle"
-    pipx install --system-site-packages git+https://github.com/sshuttle/sshuttle.git
+    pipx install --system-site-packages git+https://github.com/sshuttle/sshuttle.git@${SSHUTTLE_VERSION}
     add-history sshuttle
     add-test-command "sshuttle --version"
     add-to-list "sshuttle,https://github.com/sshuttle/sshuttle,Transparent proxy server that tunnels traffic through an SSH server"
@@ -200,7 +200,7 @@ function install_sshuttle() {
 
 function install_eaphammer() {
     colorecho "Installing eaphammer"
-    git -C /opt/tools clone --depth 1 https://github.com/s0lst1c3/eaphammer.git
+    git -C /opt/tools clone --branch "${EAPHAMMER_VERSION}" --depth 1 https://github.com/s0lst1c3/eaphammer.git
     cd /opt/tools/eaphammer || exit
     fapt apache2 dnsmasq libssl-dev libnfnetlink-dev libnl-3-dev libnl-genl-3-dev libcurl4-openssl-dev zlib1g-dev libpcap-dev
     python3 -m venv --system-site-packages ./venv
@@ -216,7 +216,7 @@ function install_eaphammer() {
 function install_fierce() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing fierce"
-    pipx install --system-site-packages git+https://github.com/mschwager/fierce
+    pipx install --system-site-packages git+https://github.com/mschwager/fierce@${FIERCE_VERSION}
     add-history fierce
     add-test-command "fierce --help"
     add-to-list "fierce,https://github.com/mschwager/fierce,A DNS reconnaissance tool for locating non-contiguous IP space"
@@ -225,7 +225,7 @@ function install_fierce() {
 function install_dnsx() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing dnsx"
-    go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+    go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@${DNSX_VERSION}
     asdf reshim golang
     add-history dnsx
     add-test-command "dnsx --help"
@@ -235,7 +235,7 @@ function install_dnsx() {
 function install_massdns() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing massdns"
-    git -C /opt/tools clone --depth 1 https://github.com/blechschmidt/massdns.git
+    git -C /opt/tools clone --branch "${MASSDNS_VERSION}" --depth 1 https://github.com/blechschmidt/massdns.git
     cd /opt/tools/massdns || exit
     make
     ln -s /opt/tools/massdns/bin/massdns /opt/tools/bin/massdns
@@ -247,7 +247,7 @@ function install_massdns() {
 function install_shuffledns() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing shuffledns"
-    go install -v github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest
+    go install -v github.com/projectdiscovery/shuffledns/cmd/shuffledns@${SHUFFLEDNS_VERSION}
     asdf reshim golang
     add-history shuffledns
     add-test-command "shuffledns --help"
@@ -283,7 +283,7 @@ function install_ligolo-ng() {
     fi
 
     local ligolo_url
-    ligolo_url=$(curl --location --silent "https://api.github.com/repos/nicocha30/ligolo-ng/releases/latest" | grep 'browser_download_url.*ligolo-ng_proxy.*linux.*'"$arch"'.*tar.gz"' | grep -o 'https://[^"]*')
+    ligolo_url="https://github.com/nicocha30/ligolo-ng/releases/download/${LIGOLO_NG_VERSION}/ligolo-ng_proxy_${LIGOLO_NG_VERSION#v}_linux_${arch}.tar.gz"
     curl --location -o /tmp/ligolo.tar.gz "$ligolo_url"
     tar -xf /tmp/ligolo.tar.gz --directory /tmp
     mv /tmp/proxy /opt/tools/bin/ligolo-ng
@@ -295,7 +295,7 @@ function install_ligolo-ng() {
 function install_rustscan() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing RustScan"
-    cargo binstall -y rustscan
+    cargo binstall -y rustscan --version "${RUSTSCAN_VERSION}"
     add-history rustscan
     add-test-command "rustscan --help"
     add-to-list "rustscan,https://github.com/RustScan/RustScan,The Modern Port Scanner"
@@ -305,7 +305,7 @@ function install_legba() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing legba"
     fapt libsmbclient-dev libsmbclient
-    git -C /opt/tools/ clone --depth 1 https://github.com/evilsocket/legba
+    git -C /opt/tools/ clone --branch "${LEGBA_GIT_VERSION}" --depth 1 https://github.com/evilsocket/legba
     cd /opt/tools/legba || exit
     cargo build --release
     # Clean dependencies used to build the binary
@@ -319,7 +319,7 @@ function install_legba() {
 function install_ssh-audit() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing ssh-audit"
-    pipx install --system-site-packages git+https://github.com/jtesta/ssh-audit
+    pipx install --system-site-packages git+https://github.com/jtesta/ssh-audit@${SSH_AUDIT_VERSION}
     add-history ssh-audit
     add-test-command "ssh-audit --help"
     add-to-list "ssh-audit,https://github.com/jtesta/ssh-audit,ssh-audit is a tool to test SSH server configuration for best practices."

@@ -31,7 +31,7 @@ function install_scrpy() {
                  meson ninja-build libsdl2-dev \
                  libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev \
                  libswresample-dev libusb-1.0-0 libusb-1.0-0-dev
-    git clone --depth 1 https://github.com/Genymobile/scrcpy
+    git clone --branch "${SCRCPY_VERSION}" --depth 1 https://github.com/Genymobile/scrcpy
     # opening subshell to not have to cd back
     (
       cd scrcpy || exit
@@ -68,7 +68,7 @@ function install_dex2jar() {
 function install_frida() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing frida"
-    pipx install --system-site-packages frida-tools
+    pipx install --system-site-packages frida-tools==${FRIDA_TOOLS_VERSION}
     add-history frida
     add-test-command "frida --version"
     add-to-list "frida,https://github.com/frida/frida,Dynamic instrumentation toolkit"
@@ -77,7 +77,7 @@ function install_frida() {
 function install_objection() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing objection"
-    pipx install --system-site-packages git+https://github.com/sensepost/objection
+    pipx install --system-site-packages git+https://github.com/sensepost/objection@${OBJECTION_VERSION}
     add-history objection
     add-test-command "objection --help"
     add-to-list "objection,https://github.com/sensepost/objection,Runtime mobile exploration"
@@ -86,7 +86,7 @@ function install_objection() {
 function install_androguard() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing androguard"
-    pipx install --system-site-packages git+https://github.com/androguard/androguard
+    pipx install --system-site-packages git+https://github.com/androguard/androguard@${ANDROGUARD_VERSION}
     add-history androguard
     add-test-command "androguard --version"
     add-to-list "androguard,https://github.com/androguard/androguard,Reverse engineering and analysis of Android applications"
@@ -96,7 +96,7 @@ function install_mobsf() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Mobile Security Framework"
     fapt wkhtmltopdf libxmlsec1 libxmlsec1-dev
-    git -C /opt/tools clone --depth 1 https://github.com/MobSF/Mobile-Security-Framework-MobSF MobSF
+    git -C /opt/tools clone --branch "${MOBSF_VERSION}" --depth 1 https://github.com/MobSF/Mobile-Security-Framework-MobSF MobSF
     cd /opt/tools/MobSF || exit
     # pipx --preinstall git+https://github.com/MobSF/yara-python-dex.git /opt/tools/MobSF would be needed for ARM64
     # in the mean time, switching to manual venv and an alias for mobsf

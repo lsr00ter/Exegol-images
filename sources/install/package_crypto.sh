@@ -6,7 +6,7 @@ source common.sh
 function install_tls-map() {
     colorecho "Installing TLS map"
     rvm use 3.2.2@tls-map --create
-    gem install tls-map
+    gem install tls-map -v "${TLS_MAP_VERSION}"
     rvm use 3.2.2@default
     add-aliases tls-map
     add-history tls-map
@@ -32,7 +32,7 @@ function install_rsacracker() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing RsaCracker"
     source "$HOME/.cargo/env"
-    cargo install rsacracker
+    cargo install rsacracker --version "${RSACRACKER_VERSION}"
     add-history rsacracker
     add-test-command "rsacracker --help"
     add-to-list "RsaCracker,https://github.com/skyf0l/RsaCracker,Powerful RSA cracker for CTFs. Supports RSA - X509 - OPENSSH in PEM and DER formats."

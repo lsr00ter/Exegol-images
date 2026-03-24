@@ -31,7 +31,7 @@ function install_steganography_apt_tools() {
 function install_zsteg() {
     colorecho "Installing zsteg"
     rvm use 3.2.2@zsteg --create
-    gem install zsteg
+    gem install zsteg -v "${ZSTEG_VERSION}"
     rvm use 3.2.2@default
     add-aliases zsteg
     add-history zsteg
@@ -42,7 +42,7 @@ function install_zsteg() {
 function install_stegolsb() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing stegolsb"
-    pipx install --system-site-packages stego-lsb
+    pipx install --system-site-packages "stego-lsb==${STEGO_LSB_VERSION}"
     add-history stegolsb
     add-test-command "stegolsb --version"
     add-to-list "stegolsb,https://github.com/KyTn/STEGOLSB,Steganography tool to hide data in BMP images using least significant bit algorithm"

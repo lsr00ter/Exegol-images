@@ -33,12 +33,12 @@ function install_k9s() {
     cd /tmp || exit
     if [[ $(uname -m) = 'x86_64' ]]
     then
-        curl -s https://api.github.com/repos/derailed/k9s/releases/latest | grep "browser_download_url.*k9s_Linux_amd64.tar.gz" | head -n 1 | grep -o 'https://[^"]*' | wget -qi -
+        wget -q "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_amd64.tar.gz"
         tar -zxvf k9s_Linux_amd64.tar.gz k9s
         rm k9s_Linux_amd64.tar.gz
     elif [[ $(uname -m) = 'aarch64' ]]
     then
-        curl -s https://api.github.com/repos/derailed/k9s/releases/latest | grep "browser_download_url.*k9s_Linux_arm64.tar.gz" | head -n 1 | grep -o 'https://[^"]*' | wget -qi -
+        wget -q "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_arm64.tar.gz"
         tar -zxvf k9s_Linux_arm64.tar.gz k9s
         rm k9s_Linux_arm64.tar.gz
     else
@@ -77,7 +77,7 @@ function install_awscli() {
 function install_scout() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing ScoutSuite"
-    pipx install --system-site-packages scoutsuite
+    pipx install --system-site-packages scoutsuite==${SCOUTSUITE_VERSION}
     add-history scout
     add-test-command "scout --help"
     add-to-list "scout,https://github.com/nccgroup/ScoutSuite,Scout Suite is an open source multi-cloud security-auditing tool which enables security posture assessment of cloud environments."
@@ -86,7 +86,7 @@ function install_scout() {
 function install_cloudsplaining() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Cloudsplaining"
-    pipx install --system-site-packages cloudsplaining
+    pipx install --system-site-packages cloudsplaining==${CLOUDSPLAINING_VERSION}
     add-history cloudsplaining
     add-test-command "cloudsplaining --help"
     add-to-list "cloudsplaining,https://github.com/salesforce/cloudsplaining,AWS IAM Security Assessment tool that identifies violations of least privilege and generates a risk-prioritized report."
@@ -94,7 +94,7 @@ function install_cloudsplaining() {
 
 function install_cloudsploit() {
     colorecho "Installing Cloudsploit"
-    git -C /opt/tools/ clone --depth 1 https://github.com/aquasecurity/cloudsploit
+    git -C /opt/tools/ clone --branch "${CLOUDSPLOIT_VERSION}" --depth 1 https://github.com/aquasecurity/cloudsploit
     cd /opt/tools/cloudsploit && npm install
     fix_ownership /opt/tools/cloudsploit/node_modules/
     chmod +x index.js
@@ -107,7 +107,7 @@ function install_cloudsploit() {
 function install_prowler() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Prowler"
-    pipx install --system-site-packages prowler
+    pipx install --system-site-packages prowler==${PROWLER_VERSION}
     add-history prowler
     add-test-command "prowler -h"
     add-to-list "prowler,https://github.com/prowler-cloud/prowler,Perform Cloud Security best practices assessments / audits / incident response / compliance / continuous monitoring / hardening and forensics readiness."
@@ -115,7 +115,7 @@ function install_prowler() {
 
 function install_cloudmapper() {
     colorecho "Installing Cloudmapper"
-    git -C /opt/tools clone --depth 1 https://github.com/duo-labs/cloudmapper.git
+    git -C /opt/tools clone --branch "${CLOUDMAPPER_VERSION}" --depth 1 https://github.com/duo-labs/cloudmapper.git
     cd /opt/tools/cloudmapper || exit
     cp -v /root/sources/assets/patches/cloudmapper.patch cloudmapper.patch
     git apply --verbose cloudmapper.patch

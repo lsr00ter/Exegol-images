@@ -34,7 +34,7 @@ function install_osint_apt_tools() {
 function install_youtubedl() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing youtube-dl"
-    pipx install --system-site-packages youtube-dl
+    pipx install --system-site-packages youtube-dl==${YOUTUBE_DL_VERSION}
     add-history youtube-dl
     add-test-command "youtube-dl --version"
     add-to-list "youtubedl,https://github.com/ytdl-org/youtube-dl,Download videos from YouTube and other sites."
@@ -43,7 +43,7 @@ function install_youtubedl() {
 function install_sublist3r() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Sublist3r"
-    pipx install --system-site-packages git+https://github.com/aboul3la/Sublist3r
+    pipx install --system-site-packages git+https://github.com/aboul3la/Sublist3r@${SUBLIST3R_VERSION}
     add-history sublist3r
     add-test-command "sublist3r --help"
     add-to-list "sublist3r,https://github.com/aboul3la/Sublist3r,a Python tool designed to enumerate subdomains of websites."
@@ -52,7 +52,7 @@ function install_sublist3r() {
 function install_assetfinder() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing assetfinder"
-    go install -v github.com/tomnomnom/assetfinder@latest
+    go install -v github.com/tomnomnom/assetfinder@${ASSETFINDER_VERSION}
     asdf reshim golang
     add-history assetfinder
     add-test-command "assetfinder --help"
@@ -62,7 +62,7 @@ function install_assetfinder() {
 function install_subfinder() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing subfinder"
-    go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+    go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@${SUBFINDER_VERSION}
     asdf reshim golang
     add-history subfinder
     add-test-command "subfinder -version"
@@ -74,10 +74,10 @@ function install_findomain() {
     colorecho "Installing findomain"
     if [[ $(uname -m) = 'x86_64' ]]
     then
-        wget -O /tmp/findomain.zip "https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip"
+        wget -O /tmp/findomain.zip "https://github.com/findomain/findomain/releases/download/${FINDOMAIN_VERSION}/findomain-linux.zip"
     elif [[ $(uname -m) = 'aarch64' ]]
     then
-        wget -O /tmp/findomain.zip "https://github.com/findomain/findomain/releases/latest/download/findomain-aarch64.zip"
+        wget -O /tmp/findomain.zip "https://github.com/findomain/findomain/releases/download/${FINDOMAIN_VERSION}/findomain-aarch64.zip"
     else
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
@@ -92,7 +92,7 @@ function install_findomain() {
 function install_holehe() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing holehe"
-    pipx install --system-site-packages holehe
+    pipx install --system-site-packages holehe==${HOLEHE_VERSION}
     add-history holehe
     add-test-command "holehe --help"
     add-to-list "holehe,https://github.com/megadose/holehe,mail osint tool finding out if it is used on websites."
@@ -100,7 +100,7 @@ function install_holehe() {
 
 function install_simplyemail() {
     colorecho "Installing SimplyEmail"
-    git -C /opt/tools/ clone --branch master --depth 1 https://github.com/killswitch-GUI/SimplyEmail.git
+    git -C /opt/tools/ clone --branch "${SIMPLYEMAIL_VERSION}" --depth 1 https://github.com/killswitch-GUI/SimplyEmail.git
     cd /opt/tools/SimplyEmail/ || exit
     fapt antiword odt2txt libxml2-dev libxslt1-dev
     virtualenv --python python2 ./venv
@@ -116,7 +116,7 @@ function install_simplyemail() {
 function install_theharvester() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing theHarvester"
-    pipx install --python 3.13 --system-site-packages git+https://github.com/laramies/theHarvester
+    pipx install --python 3.13 --system-site-packages git+https://github.com/laramies/theHarvester@${THEHARVESTER_VERSION}
     add-history theharvester
     add-test-command "theHarvester --help"
     add-to-list "theharvester,https://github.com/laramies/theHarvester,Tool for gathering e-mail accounts / subdomain names / virtual host / open ports / banners / and employee names from different public sources"
@@ -125,7 +125,7 @@ function install_theharvester() {
 function install_h8mail() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing h8mail"
-    pipx install --system-site-packages h8mail
+    pipx install --system-site-packages h8mail==${H8MAIL_VERSION}
     add-history h8mail
     add-test-command "h8mail --help"
     add-to-list "h8mail,https://github.com/khast3x/h8mail,Email OSINT and breach hunting."
@@ -167,10 +167,10 @@ function install_phoneinfoga() {
     colorecho "Installing phoneinfoga"
     if [[ $(uname -m) = 'x86_64' ]]
     then
-        wget -O /tmp/phoneinfoga.tar.gz "https://github.com/sundowndev/phoneinfoga/releases/latest/download/phoneinfoga_Linux_x86_64.tar.gz"
+        wget -O /tmp/phoneinfoga.tar.gz "https://github.com/sundowndev/phoneinfoga/releases/download/${PHONEINFOGA_VERSION}/phoneinfoga_Linux_x86_64.tar.gz"
     elif [[ $(uname -m) = 'aarch64' ]]
     then
-        wget -O /tmp/phoneinfoga.tar.gz "https://github.com/sundowndev/phoneinfoga/releases/latest/download/phoneinfoga_Linux_arm64.tar.gz"
+        wget -O /tmp/phoneinfoga.tar.gz "https://github.com/sundowndev/phoneinfoga/releases/download/${PHONEINFOGA_VERSION}/phoneinfoga_Linux_arm64.tar.gz"
     else
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
@@ -184,7 +184,7 @@ function install_phoneinfoga() {
 function install_maigret() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing maigret"
-    pipx install --system-site-packages git+https://github.com/soxoj/maigret.git
+    pipx install --system-site-packages "git+https://github.com/soxoj/maigret.git@${MAIGRET_VERSION}"
     add-history maigret
     add-test-command "maigret --help"
     add-to-list "maigret,https://github.com/soxoj/maigret,Collects information about a target email (or domain) from Google and Bing search results"
@@ -192,7 +192,7 @@ function install_maigret() {
 
 function install_linkedin2username() {
     colorecho "Installing linkedin2username"
-    git -C /opt/tools/ clone --depth 1 https://github.com/initstring/linkedin2username
+    git -C /opt/tools/ clone --branch "${LINKEDIN2USERNAME_VERSION}" --depth 1 https://github.com/initstring/linkedin2username
     cd /opt/tools/linkedin2username || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -216,7 +216,7 @@ function install_toutatis() {
 function install_waybackurls() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing waybackurls"
-    go install -v github.com/tomnomnom/waybackurls@latest
+    go install -v github.com/tomnomnom/waybackurls@${WAYBACKURLS_VERSION}
     asdf reshim golang
     add-history waybackurls
     add-test-command "waybackurls -h"
@@ -239,7 +239,7 @@ function install_carbon14() {
 
 function install_photon() {
     colorecho "Installing photon"
-    git -C /opt/tools/ clone --depth 1 https://github.com/s0md3v/photon
+    git -C /opt/tools/ clone --branch "${PHOTON_VERSION}" --depth 1 https://github.com/s0md3v/photon
     cd /opt/tools/photon || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -255,7 +255,7 @@ function install_ipinfo() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing ipinfo"
     # TODO: npm venv
-    sudo npm install ipinfo-cli --global
+    sudo npm install ipinfo-cli@"${IPINFO_CLI_VERSION}" --global
     add-history ipinfo
     add-test-command "ipinfo 127.0.0.1"
     add-to-list "ipinfo,https://github.com/ipinfo/cli,Get information about an IP address or hostname."
@@ -291,7 +291,7 @@ function install_maltego() {
 
 function install_spiderfoot() {
     colorecho "Installing Spiderfoot"
-    git -C /opt/tools/ clone --depth 1 https://github.com/smicallef/spiderfoot
+    git -C /opt/tools/ clone --branch "${SPIDERFOOT_VERSION}" --depth 1 https://github.com/smicallef/spiderfoot
     cd /opt/tools/spiderfoot || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -306,7 +306,7 @@ function install_spiderfoot() {
 
 function install_finalrecon() {
     colorecho "Installing FinalRecon"
-    git -C /opt/tools/ clone --depth 1 https://github.com/thewhiteh4t/FinalRecon
+    git -C /opt/tools/ clone --branch "${FINALRECON_VERSION}" --depth 1 https://github.com/thewhiteh4t/FinalRecon
     cd /opt/tools/FinalRecon || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -339,7 +339,7 @@ function install_githubemail() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing github-email"
     # TODO: npm venv
-    npm install --global github-email
+    npm install --global github-email@"${GITHUB_EMAIL_VERSION}"
     add-history github-email
     add-test-command "github-email whatever"
     add-to-list "githubemail,https://github.com/paulirish/github-email,a command-line tool to retrieve a user's email from Github."
@@ -347,7 +347,7 @@ function install_githubemail() {
 
 function install_recondog() {
     colorecho "Installing ReconDog"
-    git -C /opt/tools/ clone --depth 1 https://github.com/s0md3v/ReconDog
+    git -C /opt/tools/ clone --branch "${RECONDOG_VERSION}" --depth 1 https://github.com/s0md3v/ReconDog
     cd /opt/tools/ReconDog/ || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -362,7 +362,7 @@ function install_recondog() {
 function install_gron() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing gron"
-    go install -v github.com/tomnomnom/gron@latest
+    go install -v github.com/tomnomnom/gron@${GRON_VERSION}
     asdf reshim golang
     add-history gron
     add-test-command "gron --help"
@@ -395,7 +395,7 @@ function install_gitfive() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     # GitFive only works with Python 3.10+.
     colorecho "Installing GitFive"
-    pipx install --system-site-packages git+https://github.com/mxrch/GitFive
+    pipx install --system-site-packages git+https://github.com/mxrch/GitFive@${GITFIVE_VERSION}
     add-test-command "gitfive --help"
     add-to-list "GitFive,https://github.com/mxrch/GitFive,GitFive is an OSINT tool to investigate GitHub profiles."
 }
@@ -460,7 +460,7 @@ function install_blackbird() {
 function install_sherlock() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Sherlock"
-    pipx install --system-site-packages sherlock-project
+    pipx install --system-site-packages sherlock-project==${SHERLOCK_PROJECT_VERSION}
     add-history sherlock
     add-test-command "sherlock --help"
     add-to-list "Sherlock,https://github.com/sherlock-project/sherlock,Hunt down social media accounts by username across social networks."
@@ -469,7 +469,7 @@ function install_sherlock() {
 function install_censys() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Censys"
-    pipx install --system-site-packages censys
+    pipx install --system-site-packages censys==${CENSYS_VERSION}
     add-history censys
     add-test-command "censys --help"
     add-to-list "Censys,https://github.com/censys/censys-python,An easy-to-use and lightweight API wrapper for Censys APIs"
@@ -478,7 +478,7 @@ function install_censys() {
 function install_gomapenum() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing GoMapEnum"
-    git -C /tmp clone --depth 1 https://github.com/nodauf/GoMapEnum
+    git -C /tmp clone --branch "${GOMAPENUM_VERSION}" --depth 1 https://github.com/nodauf/GoMapEnum
     cd /tmp/GoMapEnum/src || exit
     go build .
     mv ./src /opt/tools/bin/gomapenum
@@ -491,7 +491,7 @@ function install_pymeta() {
   # CODE-CHECK-WHITELIST=add-aliases
   colorecho "Installing pymeta"
   fapt exiftool
-  git -C /opt/tools clone --depth 1 https://github.com/m8sec/pymeta
+  git -C /opt/tools clone --branch "${PYMETA_VERSION}" --depth 1 https://github.com/m8sec/pymeta
   cd /opt/tools/pymeta || exit
   python3 -m venv --system-site-packages ./venv
   source ./venv/bin/activate
@@ -507,7 +507,7 @@ function install_pymeta() {
 function install_recon_ng() {
     # CODE-CHECK-WHITELIST=add-history
     colorecho "Installing Recon-ng"
-    git -C /opt/tools clone --depth 1 https://github.com/lanmaster53/recon-ng.git
+    git -C /opt/tools clone --branch "${RECON_NG_VERSION}" --depth 1 https://github.com/lanmaster53/recon-ng.git
     cd /opt/tools/recon-ng || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -522,7 +522,7 @@ function install_recon_ng() {
 function install_instaloader() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing Instaloader"
-    pipx install --system-site-packages instaloader
+    pipx install --system-site-packages "instaloader==${INSTALOADER_VERSION}"
     add-test-command "instaloader --help"
     add-to-list "Instaloader,https://github.com/instaloader/instaloader,Download content/captions/metadata from Instagram"
 }
@@ -530,7 +530,7 @@ function install_instaloader() {
 function install_ghunt() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing GHunt"
-    pipx install --system-site-packages ghunt
+    pipx install --system-site-packages "ghunt==${GHUNT_VERSION}"
     add-history ghunt
     add-test-command "ghunt --help"
     add-to-list "GHunt,https://github.com/mxrch/GHunt,Investigate Google Accounts with emails"
@@ -553,7 +553,7 @@ function install_zehef() {
 function install_metagoofil() {
     # CODE-CHECK-WHITELIST=add-history
     colorecho "Installing Metagoofil"
-    git -C /opt/tools clone --depth 1 https://github.com/opsdisk/metagoofil
+    git -C /opt/tools clone --branch "${METAGOOFIL_VERSION}" --depth 1 https://github.com/opsdisk/metagoofil
     cd /opt/tools/metagoofil || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate

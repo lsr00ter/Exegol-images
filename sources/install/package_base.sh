@@ -204,7 +204,7 @@ function install_pipx() {
 
 function install_pyftpdlib() {
     colorecho "Installing pyftpdlib"
-    pip3 install pyftpdlib
+    pip3 install pyftpdlib==${PYFTPDLIB_VERSION}
     add-aliases pyftpdlib
     add-history pyftpdlib
     add-test-command "python3 -c 'import pyftpdlib'"
@@ -235,7 +235,7 @@ function install_neovim() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     if [[ $(uname -m) = 'x86_64' ]]
     then
-        curl --location --output nvim.appimage "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage"
+        curl --location --output nvim.appimage "https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim-linux-x86_64.appimage"
         chmod u+x nvim.appimage
         ./nvim.appimage --appimage-extract
         mkdir /opt/tools/nvim
@@ -273,7 +273,7 @@ function install_gf() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing gf"
     # A wrapper around grep, to help you grep for things
-    go install -v github.com/tomnomnom/gf@latest
+    go install -v github.com/tomnomnom/gf@${GF_VERSION}
     asdf reshim golang
     # Enable autocompletion
     {
@@ -593,7 +593,7 @@ function package_base() {
     install_exegol-history
 
     # TLDR
-    pipx install --system-site-packages tldr
+    pipx install --system-site-packages "tldr==${TLDR_VERSION}"
     /root/.local/bin/tldr -u
 
     post_install

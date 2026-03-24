@@ -46,14 +46,14 @@ function install_gdb_plugins() {
 
     # Pwndbg
     colorecho "Installing pwndbg GDB plugin"
-    git -C /opt/tools/gdb clone --depth 1 https://github.com/pwndbg/pwndbg
+    git -C /opt/tools/gdb clone --branch "${PWNDBG_VERSION}" --depth 1 https://github.com/pwndbg/pwndbg
     cd /opt/tools/gdb/pwndbg || exit
     ./setup.sh
     add-to-list "pwndbg,https://github.com/pwndbg/pwndbg,a GDB plugin that makes debugging with GDB suck less"
 
     # PEDA
     colorecho "Installing PEDA GDB plugin"
-    git -C /opt/tools/gdb clone --depth 1 https://github.com/longld/peda.git
+    git -C /opt/tools/gdb clone --branch "${PEDA_VERSION}" --depth 1 https://github.com/longld/peda.git
     add-to-list "peda,https://github.com/longld/peda,Python Exploit Development Assistance for GDB."
 
     # GEF
@@ -88,7 +88,7 @@ function install_angr() {
 
 function install_checksec-py() {
     colorecho "Installing checksec.py"
-    git -C /opt/tools/ clone --depth 1 https://github.com/Wenzel/checksec.py.git
+    git -C /opt/tools/ clone --branch "${CHECKSEC_PY_VERSION}" --depth 1 https://github.com/Wenzel/checksec.py.git
     cd /opt/tools/checksec.py || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -103,7 +103,7 @@ function install_checksec-py() {
 function install_radare2() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing radare2"
-    git -C /opt/tools/ clone --depth 1 https://github.com/radareorg/radare2
+    git -C /opt/tools/ clone --branch "${RADARE2_VERSION}" --depth 1 https://github.com/radareorg/radare2
     /opt/tools/radare2/sys/install.sh
     add-history radare2
     add-test-command "radare2 -h"
@@ -114,7 +114,7 @@ function install_ghidra() {
     # CODE-CHECK-WHITELIST=add-test-command
     colorecho "Installing Ghidra"
     local ghidra_url
-    ghidra_url=$(curl --location --silent "https://api.github.com/repos/NationalSecurityAgency/ghidra/releases/latest" | grep 'browser_download_url' | grep -o 'https://[^"]*')
+    ghidra_url="https://github.com/NationalSecurityAgency/ghidra/releases/download/${GHIDRA_VERSION}/ghidra_${GHIDRA_VERSION#Ghidra_}_${GHIDRA_VERSION%%_*}.zip"
     curl --location -o /tmp/ghidra.zip "$ghidra_url"
     unzip -q /tmp/ghidra.zip -d /opt/tools # -q because too much useless verbose
     mv -v /opt/tools/ghidra_* /opt/tools/ghidra # ghidra always has a version number in the unzipped folder, lets make it consistent
@@ -199,7 +199,7 @@ function install_pycdc() {
 function install_vt(){
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing vt"
-    go install -v github.com/VirusTotal/vt-cli/vt@latest
+    go install -v github.com/VirusTotal/vt-cli/vt@${VT_CLI_VERSION}
     asdf reshim golang
     add-history vt
     add-test-command "vt --help"

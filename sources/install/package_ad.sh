@@ -41,7 +41,7 @@ function install_asrepcatcher() {
 function install_pretender() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Pretender"
-    go install -v github.com/RedTeamPentesting/pretender@latest
+    go install -v github.com/RedTeamPentesting/pretender@${PRETENDER_VERSION}
     asdf reshim golang
     add-history pretender
     add-test-command "pretender --help |& grep pretender"
@@ -50,7 +50,7 @@ function install_pretender() {
 
 function install_responder() {
     colorecho "Installing Responder"
-    git -C /opt/tools/ clone --depth 1 https://github.com/lgandx/Responder
+    git -C /opt/tools/ clone --branch "${RESPONDER_VERSION}" --depth 1 https://github.com/lgandx/Responder
     cd /opt/tools/Responder || exit
     fapt gcc-mingw-w64-x86-64
     python3 -m venv --system-site-packages ./venv
@@ -97,7 +97,7 @@ function install_ldapdomaindump() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing ldapdomaindump"
     # Remove --system-site-packages because the ldapdomaindump package conflicts with the base package
-    pipx install --system-site-packages git+https://github.com/dirkjanm/ldapdomaindump
+    pipx install --system-site-packages git+https://github.com/dirkjanm/ldapdomaindump@${LDAPDOMAINDUMP_VERSION}
     add-history ldapdomaindump
     add-test-command "ldapdomaindump --help"
     add-to-list "ldapdomaindump,https://github.com/dirkjanm/ldapdomaindump,A tool for dumping domain data from an LDAP service"
@@ -114,7 +114,7 @@ function install_adwsdomaindump() {
 
 function install_bloodhound-py() {
     colorecho "Installing and Python ingestor for BloodHound"
-    pipx install --system-site-packages git+https://github.com/fox-it/BloodHound.py
+    pipx install --system-site-packages git+https://github.com/fox-it/BloodHound.py@${BLOODHOUND_PY_VERSION}
     add-aliases bloodhound-py
     add-history bloodhound-py
     add-test-command "bloodhound.py --help"
@@ -303,7 +303,7 @@ function install_cypheroth() {
 function install_mitm6_pip() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing mitm6 with pip"
-    pipx install --system-site-packages mitm6
+    pipx install --system-site-packages mitm6==${MITM6_VERSION}
     add-history mitm6
     add-test-command "mitm6 --help"
     add-to-list "mitm6,https://github.com/fox-it/mitm6,Tool to conduct a man-in-the-middle attack against IPv6 protocols."
@@ -389,7 +389,7 @@ function install_pykek() {
 function install_lsassy() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing lsassy"
-    pipx install --system-site-packages lsassy
+    pipx install --system-site-packages lsassy==${LSASSY_VERSION}
     add-history lsassy
     add-test-command "lsassy --version"
     add-to-list "lsassy,https://github.com/Hackndo/lsassy,Windows secrets and passwords extraction tool."
@@ -413,7 +413,7 @@ function install_ruler() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Downloading ruler and form templates from source..."
     asdf set golang 1.24.1
-    go install -v github.com/sensepost/ruler@latest
+    go install -v github.com/sensepost/ruler@${RULER_VERSION}
     asdf reshim golang
     add-history ruler
     add-test-command "ruler --version"
@@ -434,7 +434,7 @@ function install_upx() {
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
     local upx_url
-    upx_url=$(curl --location --silent "https://api.github.com/repos/upx/upx/releases/latest" | grep 'browser_download_url.*upx.*'"$arch"'.*tar.xz"' | grep -o 'https://[^"]*')
+    upx_url="https://github.com/upx/upx/releases/download/${UPX_VERSION}/upx-${UPX_VERSION#v}-${arch}_linux.tar.xz"
     curl --location -o /tmp/upx.tar.xz "$upx_url"
     tar -xf /tmp/upx.tar.xz --directory /tmp
     rm /tmp/upx.tar.xz
@@ -460,7 +460,7 @@ function install_amber() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing amber"
     # Installing keystone requirement
-    git -C /opt/tools/ clone --depth 1 https://github.com/EgeBalci/keystone
+    git -C /opt/tools/ clone --branch "${KEYSTONE_VERSION}" --depth 1 https://github.com/EgeBalci/keystone
     cd /opt/tools/keystone || exit
     mkdir build && cd build || exit
     ../make-lib.sh
@@ -468,7 +468,7 @@ function install_amber() {
     make -j
     make install && ldconfig
     # Installing amber
-    go install -v github.com/EgeBalci/amber@latest
+    go install -v github.com/EgeBalci/amber@${AMBER_VERSION}
     asdf reshim golang
     add-history amber
     add-test-command "amber --help"
@@ -527,7 +527,7 @@ function install_krbrelayx() {
 function install_evilwinrm() {
     colorecho "Installing evil-winrm"
     rvm use 3.1.2@evil-winrm --create
-    gem install evil-winrm
+    gem install evil-winrm -v "${EVIL_WINRM_VERSION}"
     rvm use 3.2.2@default
     add-aliases evil-winrm
     add-history evil-winrm
@@ -542,7 +542,7 @@ function install_pypykatz() {
     # see https://github.com/wbond/oscrypto/issues/78 - no update as of Feb 23 2026, so still needed, extending for 6 months
     local temp_fix_limit="2026-08-10"
     if check_temp_fix_expiry "$temp_fix_limit"; then
-      git -C /opt/tools/ clone --depth 1 https://github.com/skelsec/pypykatz
+      git -C /opt/tools/ clone --branch "${PYPYKATZ_VERSION}" --depth 1 https://github.com/skelsec/pypykatz
       cd /opt/tools/pypykatz || exit
       python3 -m venv --system-site-packages ./venv
       source ./venv/bin/activate
@@ -561,7 +561,7 @@ function install_pypykatz() {
 function install_krbjack() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing krbjack"
-    pipx install --system-site-packages krbjack
+    pipx install --system-site-packages "krbjack==${KRBJACK_VERSION}"
     add-test-command "krbjack --help"
     add-to-list "krbjack,https://github.com/almandin/krbjack,A Kerberos AP-REQ hijacking tool with DNS unsecure updates abuse."
 }
@@ -578,7 +578,7 @@ function install_enyx() {
 function install_enum4linux-ng() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing enum4linux-ng"
-    pipx install --system-site-packages git+https://github.com/cddmp/enum4linux-ng
+    pipx install --system-site-packages "git+https://github.com/cddmp/enum4linux-ng@${ENUM4LINUX_NG_VERSION}"
     add-history enum4linux-ng
     add-test-command "enum4linux-ng --help"
     add-to-list "enum4linux-ng,https://github.com/cddmp/enum4linux-ng,Tool for enumerating information from Windows and Samba systems."
@@ -602,7 +602,7 @@ function install_zerologon() {
 
 function install_libmspack() {
     colorecho "Installing libmspack"
-    git -C /opt/tools/ clone --depth 1 https://github.com/kyz/libmspack.git
+    git -C /opt/tools/ clone --branch "${LIBMSPACK_VERSION}" --depth 1 https://github.com/kyz/libmspack.git
     cd /opt/tools/libmspack/libmspack || exit
     ./rebuild.sh
     ./configure
@@ -617,12 +617,12 @@ function install_windapsearch-go() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Go windapsearch"
     # Install mage dependency
-    git -C /opt/tools/ clone --depth 1 https://github.com/magefile/mage
+    git -C /opt/tools/ clone --branch "${MAGE_VERSION}" --depth 1 https://github.com/magefile/mage
     cd /opt/tools/mage || exit
     go run bootstrap.go
     asdf reshim golang
     # Install windapsearch tool
-    git -C /opt/tools/ clone --depth 1 https://github.com/ropnop/go-windapsearch
+    git -C /opt/tools/ clone --branch "${GO_WINDAPSEARCH_VERSION}" --depth 1 https://github.com/ropnop/go-windapsearch
     cd /opt/tools/go-windapsearch || exit
     mage build
     ln -v -s /opt/tools/go-windapsearch/windapsearch /opt/tools/bin/windapsearch
@@ -662,7 +662,7 @@ function install_lnkup() {
 
 function install_polenum() {
     colorecho "Installing polenum"
-    git -C /opt/tools/ clone --depth 1 https://github.com/Wh1t3Fox/polenum
+    git -C /opt/tools/ clone --branch "${POLENUM_VERSION}" --depth 1 https://github.com/Wh1t3Fox/polenum
     cd /opt/tools/polenum || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -677,7 +677,7 @@ function install_polenum() {
 function install_smbmap() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing smbmap"
-    git -C /opt/tools clone --depth 1 https://github.com/ShawnDEvans/smbmap
+    git -C /opt/tools clone --branch "${SMBMAP_VERSION}" --depth 1 https://github.com/ShawnDEvans/smbmap
     cd /opt/tools/smbmap || exit
     pipx install --system-site-packages .
     add-history smbmap
@@ -711,7 +711,7 @@ function install_pth-tools() {
 function install_smtp-user-enum() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing smtp-user-enum"
-    pipx install --system-site-packages smtp-user-enum
+    pipx install --system-site-packages "smtp-user-enum==${SMTP_USER_ENUM_VERSION}"
     add-history smtp-user-enum
     add-test-command "smtp-user-enum --help"
     add-to-list "smtp-user-enum,https://github.com/pentestmonkey/smtp-user-enum,A tool to enumerate email addresses via SMTP"
@@ -719,7 +719,7 @@ function install_smtp-user-enum() {
 
 function install_gpp-decrypt() {
     colorecho "Installing gpp-decrypt"
-    git -C /opt/tools/ clone --depth 1 https://github.com/t0thkr1s/gpp-decrypt
+    git -C /opt/tools/ clone --branch "${GPP_DECRYPT_VERSION}" --depth 1 https://github.com/t0thkr1s/gpp-decrypt
     cd /opt/tools/gpp-decrypt || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -757,7 +757,7 @@ function install_hashonymize() {
 function install_gosecretsdump() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing gosecretsdump"
-    go install -v github.com/C-Sto/gosecretsdump@latest
+    go install -v github.com/C-Sto/gosecretsdump@${GOSECRETSDUMP_VERSION}
     asdf reshim golang
     add-history gosecretsdump
     add-test-command "gosecretsdump -version"
@@ -767,7 +767,7 @@ function install_gosecretsdump() {
 function install_adidnsdump() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing adidnsdump"
-    pipx install --system-site-packages git+https://github.com/dirkjanm/adidnsdump
+    pipx install --system-site-packages "git+https://github.com/dirkjanm/adidnsdump@${ADIDNSDUMP_VERSION}"
     add-history adidnsdump
     add-test-command "adidnsdump --help"
     add-to-list "adidnsdump,https://github.com/dirkjanm/adidnsdump,Active Directory Integrated DNS dump utility"
@@ -796,7 +796,7 @@ function install_pygpoabuse() {
 function install_bloodhound-import() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing bloodhound-import"
-    pipx install --system-site-packages bloodhound-import
+    pipx install --system-site-packages "bloodhound-import==${BLOODHOUND_IMPORT_VERSION}"
     add-history bloodhound-import
     add-test-command "bloodhound-import --help"
     add-to-list "bloodhound-import,https://github.com/fox-it/BloodHound.py,Import data into BloodHound for analyzing active directory trust relationships"
@@ -818,7 +818,7 @@ function install_bloodhound-quickwin() {
 
 function install_ldapsearch-ad() {
     colorecho "Installing ldapsearch-ad"
-    git -C /opt/tools/ clone --depth 1 https://github.com/yaap7/ldapsearch-ad
+    git -C /opt/tools/ clone --branch "${LDAPSEARCH_AD_VERSION}" --depth 1 https://github.com/yaap7/ldapsearch-ad
     cd /opt/tools/ldapsearch-ad || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -868,7 +868,7 @@ function install_dfscoerce() {
 function install_coercer() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Coercer"
-    pipx install --system-site-packages git+https://github.com/p0dalirius/Coercer
+    pipx install --system-site-packages "git+https://github.com/p0dalirius/Coercer@${COERCER_VERSION}"
     add-history coercer
     add-test-command "coercer --help"
     add-to-list "coercer,https://github.com/p0dalirius/coercer,DFS-R target coercion tool"
@@ -897,7 +897,7 @@ function install_pkinittools() {
 function install_pywhisker() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing pyWhisker"
-    pipx install --system-site-packages git+https://github.com/ShutdownRepo/pywhisker
+    pipx install --system-site-packages "git+https://github.com/ShutdownRepo/pywhisker@${PYWHISKER_VERSION}"
     add-history pywhisker
     add-test-command "pywhisker --help"
     add-to-list "pywhisker,https://github.com/ShutdownRepo/pywhisker,PyWhisker is a Python equivalent of the original Whisker made by Elad Shamir and written in C#. This tool allows users to manipulate the msDS-KeyCredentialLink attribute of a target user/computer to obtain full control over that object. It's based on Impacket and on a Python equivalent of Michael Grafnetter's DSInternals called PyDSInternals made by podalirius."
@@ -929,7 +929,7 @@ function install_targetedKerberoast() {
 function install_pcredz() {
     colorecho "Installing PCredz"
     fapt libpcap-dev
-    git -C /opt/tools/ clone --depth 1 https://github.com/lgandx/PCredz
+    git -C /opt/tools/ clone --branch "${PCREDZ_VERSION}" --depth 1 https://github.com/lgandx/PCredz
     cd /opt/tools/PCredz || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -962,7 +962,7 @@ function install_donpapi() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing DonPAPI"
     fapt swig
-    pipx install --system-site-packages git+https://github.com/login-securite/DonPAPI
+    pipx install --system-site-packages "git+https://github.com/login-securite/DonPAPI@${DONPAPI_VERSION}"
     add-history donpapi
     add-test-command "DonPAPI --help"
     add-to-list "donpapi,https://github.com/login-securite/DonPAPI,Dumping revelant information on compromised targets without AV detection"
@@ -979,7 +979,7 @@ function install_webclientservicescanner() {
 
 function install_certipy() {
     colorecho "Installing Certipy"
-    git -C /opt/tools/ clone --depth 1 https://github.com/ly4k/Certipy
+    git -C /opt/tools/ clone --branch "${CERTIPY_VERSION}" --depth 1 https://github.com/ly4k/Certipy
     cd /opt/tools/Certipy || exit
     python3.13 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -1021,7 +1021,7 @@ function install_gmsadumper() {
 
 function install_pylaps() {
     colorecho "Installing pyLAPS"
-    git -C /opt/tools/ clone --depth 1 https://github.com/p0dalirius/pyLAPS
+    git -C /opt/tools/ clone --branch "${PYLAPS_VERSION}" --depth 1 https://github.com/p0dalirius/pyLAPS
     cd /opt/tools/pyLAPS || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -1035,7 +1035,7 @@ function install_pylaps() {
 
 function install_pyfinduncommonshares() {
     colorecho "Installing pyFindUncommonShares"
-    git -C /opt/tools/ clone --depth 1 https://github.com/p0dalirius/pyFindUncommonShares
+    git -C /opt/tools/ clone --branch "${PYFINDUNCOMMONSHARES_VERSION}" --depth 1 https://github.com/p0dalirius/pyFindUncommonShares
     cd /opt/tools/pyFindUncommonShares/ || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -1070,7 +1070,7 @@ function install_ldaprelayscan() {
 function install_goldencopy() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing GoldenCopy"
-    git -C /opt/tools/ clone --depth 1 https://github.com/Dramelac/GoldenCopy
+    git -C /opt/tools/ clone --branch "${GOLDENCOPY_VERSION}" --depth 1 https://github.com/Dramelac/GoldenCopy
     cd /opt/tools/GoldenCopy || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -1099,7 +1099,7 @@ function install_crackhound() {
 function install_kerbrute() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Kerbrute"
-    go install -v github.com/ropnop/kerbrute@latest
+    go install -v github.com/ropnop/kerbrute@${KERBRUTE_VERSION}
     asdf reshim golang
     add-history kerbrute
     add-test-command "kerbrute --help"
@@ -1110,7 +1110,7 @@ function install_ldeep() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing ldeep"
     fapt libkrb5-dev krb5-config
-    pipx install --system-site-packages ldeep
+    pipx install --system-site-packages "ldeep==${LDEEP_VERSION}"
     add-history ldeep
     add-test-command "ldeep --help"
     add-to-list "ldeep,https://github.com/franc-pentest/ldeep,ldeep is a tool to discover hidden paths on Web servers."
@@ -1120,7 +1120,7 @@ function install_rusthound() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing RustHound"
     fapt gcc clang libclang-dev libgssapi-krb5-2 libkrb5-dev libsasl2-modules-gssapi-mit musl-tools gcc-mingw-w64-x86-64
-    cargo install rusthound
+    cargo install rusthound --version "${RUSTHOUND_VERSION}"
     add-history rusthound
     add-test-command "rusthound --help"
     add-to-list "rusthound,https://github.com/NH-RED-TEAM/RustHound,BloodHound ingestor in Rust."
@@ -1130,7 +1130,7 @@ function install_rusthound-ce() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing RustHound for BloodHound-CE"
     fapt gcc clang libclang-dev libgssapi-krb5-2 libkrb5-dev libsasl2-modules-gssapi-mit musl-tools gcc-mingw-w64-x86-64
-    cargo install rusthound-ce
+    cargo install rusthound-ce --version "${RUSTHOUND_CE_VERSION}"
     add-history rusthound-ce
     add-test-command "rusthound-ce --help"
     add-to-list "rusthound-ce,https://github.com/g0h4n/RustHound-CE,BloodHound-CE ingestor in Rust."
@@ -1139,7 +1139,7 @@ function install_rusthound-ce() {
 function install_certsync() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing certsync"
-    pipx install --system-site-packages git+https://github.com/zblurx/certsync
+    pipx install --system-site-packages "git+https://github.com/zblurx/certsync@${CERTSYNC_VERSION}"
     add-history certsync
     add-test-command "certsync --help"
     add-to-list "certsync,https://github.com/zblurx/certsync,certsync is a tool that helps you synchronize certificates between two directories."
@@ -1148,7 +1148,7 @@ function install_certsync() {
 function install_keepwn() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing KeePwn"
-    pipx install --system-site-packages git+https://github.com/Orange-Cyberdefense/KeePwn
+    pipx install --system-site-packages "git+https://github.com/Orange-Cyberdefense/KeePwn@${KEEPWN_VERSION}"
     add-history keepwn
     add-test-command "KeePwn --help"
     add-to-list "KeePwn,https://github.com/Orange-Cyberdefense/KeePwn,KeePwn is a tool that extracts passwords from KeePass 1.x and 2.x databases."
@@ -1157,7 +1157,7 @@ function install_keepwn() {
 function install_pre2k() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing pre2k"
-    pipx install --system-site-packages git+https://github.com/garrettfoster13/pre2k
+    pipx install --system-site-packages "git+https://github.com/garrettfoster13/pre2k@${PRE2K_VERSION}"
     add-history pre2k
     add-test-command "pre2k --help"
     add-to-list "pre2k,https://github.com/garrettfoster13/pre2k,pre2k is a tool to check if a Windows domain has any pre-2000 Windows 2000 logon names still in use."
@@ -1175,7 +1175,7 @@ function install_msprobe() {
 function install_masky() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing masky"
-    pipx install --system-site-packages git+https://github.com/Z4kSec/Masky
+    pipx install --system-site-packages "git+https://github.com/Z4kSec/Masky@${MASKY_VERSION}"
     add-history masky
     add-test-command "masky --help"
     add-to-list "masky,https://github.com/Z4kSec/Masky,Masky is a python library providing an alternative way to remotely dump domain users' credentials thanks to an ADCS. A command line tool has been built on top of this library in order to easily gather PFX or NT hashes and TGT on a larger scope"
@@ -1207,7 +1207,7 @@ function install_PassTheCert() {
 function install_bqm() {
     colorecho "Installing BQM"
     rvm use 3.2.2@bqm --create
-    gem install bqm --no-wrapper
+    gem install bqm -v "${BQM_VERSION}" --no-wrapper
     rvm use 3.2.2@default
     add-aliases bqm
     add-history bqm
@@ -1265,7 +1265,7 @@ function install_noPac() {
 function install_roadrecon() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing roadrecon"
-    pipx install --system-site-packages roadrecon
+    pipx install --system-site-packages "roadrecon==${ROADRECON_VERSION}"
     add-test-command "roadrecon --help"
     add-test-command "roadrecon-gui --help"
     add-to-list "ROADrecon,https://github.com/dirkjanm/ROADtools#roadrecon,Azure AD recon for red and blue."
@@ -1274,7 +1274,7 @@ function install_roadrecon() {
 function install_roadtx() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing roadtx"
-    pipx install --system-site-packages roadtx
+    pipx install --system-site-packages "roadtx==${ROADTX_VERSION}"
     add-test-command "roadtx --help"
     add-to-list "ROADtx,https://github.com/dirkjanm/ROADtools#roadtools-token-exchange-roadtx,ROADtools Token eXchange."
 }
@@ -1304,7 +1304,7 @@ function install_GPOddity() {
 
 function install_netexec() {
     colorecho "Installing netexec"
-    git -C /opt/tools/ clone --depth 1 https://github.com/Pennyw0rth/NetExec
+    git -C /opt/tools/ clone --branch "${NETEXEC_VERSION}" --depth 1 https://github.com/Pennyw0rth/NetExec
     pipx install --system-site-packages /opt/tools/NetExec/
     mkdir -p ~/.nxc
     [[ -f ~/.nxc/nxc.conf ]] && mv ~/.nxc/nxc.conf ~/.nxc/nxc.conf.bak
@@ -1318,7 +1318,7 @@ function install_netexec() {
 
 function install_extractbitlockerkeys() {
     colorecho "Installing ExtractBitlockerKeys"
-    git -C /opt/tools/ clone --depth 1 https://github.com/p0dalirius/ExtractBitlockerKeys
+    git -C /opt/tools/ clone --branch "${EXTRACTBITLOCKERKEYS_VERSION}" --depth 1 https://github.com/p0dalirius/ExtractBitlockerKeys
     cd /opt/tools/ExtractBitlockerKeys || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -1332,7 +1332,7 @@ function install_extractbitlockerkeys() {
 
 function install_LDAPWordlistHarvester() {
     colorecho "Installing LDAPWordlistHarvester"
-    git -C /opt/tools/ clone --depth 1 https://github.com/p0dalirius/pyLDAPWordlistHarvester
+    git -C /opt/tools/ clone --branch "${PYLDAPWORDLISTHARVESTER_VERSION}" --depth 1 https://github.com/p0dalirius/pyLDAPWordlistHarvester
     cd /opt/tools/pyLDAPWordlistHarvester || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -1347,7 +1347,7 @@ function install_LDAPWordlistHarvester() {
 function install_pywerview() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing pywerview"
-    pipx install --system-site-packages git+https://github.com/the-useless-one/pywerview
+    pipx install --system-site-packages "git+https://github.com/the-useless-one/pywerview@${PYWERVIEW_VERSION}"
     add-history pywerview
     add-test-command "pywerview --help"
     add-to-list "pywerview,https://github.com/the-useless-one/pywerview,A (partial) Python rewriting of PowerSploit's PowerView."
@@ -1390,7 +1390,7 @@ function install_ntlm_theft() {
 function install_abuseACL() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing abuseACL"
-    pipx install --system-site-packages git+https://github.com/AetherBlack/abuseACL
+    pipx install --system-site-packages "git+https://github.com/AetherBlack/abuseACL@${ABUSEACL_VERSION}"
     add-history abuseACL
     add-test-command "abuseACL --help"
     add-to-list "abuseACL,https://github.com/AetherBlack/abuseACL,A python script to automatically list vulnerable Windows ACEs/ACLs."
@@ -1399,7 +1399,7 @@ function install_abuseACL() {
 function install_bloodyAD() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing bloodyAD"
-    pipx install --system-site-packages git+https://github.com/CravateRouge/bloodyAD
+    pipx install --system-site-packages "git+https://github.com/CravateRouge/bloodyAD@${BLOODYAD_VERSION}"
     add-history bloodyAD
     add-test-command "bloodyAD --help"
     add-to-list "bloodyAD,https://github.com/CravateRouge/bloodyAD,bloodyAD is an Active Directory privilege escalation swiss army knife."
@@ -1408,7 +1408,7 @@ function install_bloodyAD() {
 function install_autobloody() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing autobloody"
-    pipx install --system-site-packages git+https://github.com/CravateRouge/autobloody
+    pipx install --system-site-packages "git+https://github.com/CravateRouge/autobloody@${AUTOBLOODY_VERSION}"
     add-history autobloody
     add-test-command "autobloody --help"
     add-to-list "autobloody,https://github.com/CravateRouge/autobloody,Automatically exploit Active Directory privilege escalation paths shown by BloodHound."
@@ -1417,7 +1417,7 @@ function install_autobloody() {
 function install_dploot() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing dploot"
-    pipx install --system-site-packages git+https://github.com/zblurx/dploot
+    pipx install --system-site-packages "git+https://github.com/zblurx/dploot@${DPLOOT_VERSION}"
     add-history dploot
     add-test-command "dploot --help"
     add-to-list "dploot,https://github.com/zblurx/dploot,dploot is Python rewrite of SharpDPAPI written un C#."
@@ -1439,7 +1439,7 @@ function install_PXEThief() {
 
 function install_sccmhunter() {
     colorecho "Installing sccmhunter"
-    git -C /opt/tools/ clone --depth 1 https://github.com/garrettfoster13/sccmhunter
+    git -C /opt/tools/ clone --branch "${SCCMHUNTER_VERSION}" --depth 1 https://github.com/garrettfoster13/sccmhunter
     cd /opt/tools/sccmhunter || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -1496,7 +1496,7 @@ function install_cmloot() {
 function install_smbclientng() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing smbclient-ng"
-    pipx install --system-site-packages git+https://github.com/p0dalirius/smbclient-ng
+    pipx install --system-site-packages "git+https://github.com/p0dalirius/smbclient-ng@${SMBCLIENT_NG_VERSION}"
     add-history smbclient-ng
     add-test-command "smbclientng --help"
     add-to-list "smbclient-ng,https://github.com/p0dalirius/smbclient-ng,smbclient-ng is a fast and user friendly way to interact with SMB shares."
@@ -1505,7 +1505,7 @@ function install_smbclientng() {
 function install_conpass() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing conpass"
-    pipx install --system-site-packages git+https://github.com/login-securite/conpass
+    pipx install --system-site-packages "git+https://github.com/login-securite/conpass@${CONPASS_VERSION}"
     add-history conpass
     add-test-command "conpass --help"
     add-to-list "conpass,https://github.com/login-securite/conpass,Python tool for continuous password spraying taking into account the password policy."
@@ -1513,7 +1513,7 @@ function install_conpass() {
 
 function install_adminer() {
     colorecho "Installing adminer"
-    pipx install --system-site-packages git+https://github.com/Mazars-Tech/AD_Miner
+    pipx install --system-site-packages "git+https://github.com/Mazars-Tech/AD_Miner@${AD_MINER_VERSION}"
     add-aliases adminer
     add-history adminer
     add-test-command "adminer --help"
@@ -1524,7 +1524,7 @@ function install_goexec() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing GoExec"
     asdf set golang 1.24.1
-    CGO_ENABLED=0 go install -ldflags='-s -w' -v github.com/FalconOpsLLC/goexec@latest
+    CGO_ENABLED=0 go install -ldflags='-s -w' -v github.com/FalconOpsLLC/goexec@${GOEXEC_VERSION}
     asdf reshim golang
     add-history goexec
     add-test-command "goexec --help"
@@ -1548,7 +1548,7 @@ function install_remotemonologue() {
 function install_godap() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing godap"
-    go install -v github.com/Macmod/godap@latest
+    go install -v github.com/Macmod/godap@${GODAP_VERSION}
     asdf reshim golang
     add-history godap
     add-test-command "godap --help"
@@ -1558,7 +1558,7 @@ function install_godap() {
 function install_powerview() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing powerview.py"
-    pipx install --system-site-packages git+https://github.com/aniqfakhrul/powerview.py
+    pipx install --system-site-packages "git+https://github.com/aniqfakhrul/powerview.py@${POWERVIEW_PY_VERSION}"
     add-history powerview.py
     add-test-command "powerview --help"
     add-to-list "Powerview.py,https://github.com/aniqfakhrul/powerview.py,PowerView.py is an alternative for the awesome original PowerView.ps1 script."
@@ -1595,7 +1595,7 @@ function install_pygoldengmsa() {
 function install_evil-winrm-py() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing evil-winrm-py"
-    pipx install --system-site-package 'evil-winrm-py[kerberos]@git+https://github.com/adityatelange/evil-winrm-py'
+    pipx install --system-site-package "evil-winrm-py[kerberos] @ git+https://github.com/adityatelange/evil-winrm-py@${EVIL_WINRM_PY_VERSION}"
     add-history evil-winrm-py
     add-test-command "evil-winrm-py --help"
     add-to-list "evil-winrm-py,https://github.com/adityatelange/evil-winrm-py,Evil-WinRM. But in python"

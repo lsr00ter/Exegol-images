@@ -6,7 +6,7 @@ source common.sh
 function install_sipvicious() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing SIPVicious"
-    pipx install --system-site-packages git+https://github.com/enablesecurity/sipvicious.git
+    pipx install --system-site-packages git+https://github.com/enablesecurity/sipvicious.git@${SIPVICIOUS_VERSION}
     add-history sipvicious_svcrack
     add-test-command "sipvicious_svcrack --version"
     add-to-list "sipvicious,https://github.com/enablesecurity/sipvicious,Enumeration and MITM tool for SIP devices"

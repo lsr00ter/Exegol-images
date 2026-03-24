@@ -29,7 +29,7 @@ function install_rfid_apt_tools() {
 function install_mfoc() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing mfoc"
-    git -C /opt/tools/ clone --depth 1 https://github.com/nfc-tools/mfoc
+    git -C /opt/tools/ clone --branch "${MFOC_VERSION}" --depth 1 https://github.com/nfc-tools/mfoc
     cd /opt/tools/mfoc || exit
     autoreconf -vis
     ./configure
@@ -59,7 +59,7 @@ function install_libnfc-crypto1-crack() {
 
 function install_mfdread() {
     colorecho "Installing mfdread"
-    git -C /opt/tools/ clone --depth 1 https://github.com/zhovner/mfdread
+    git -C /opt/tools/ clone --branch "${MFDREAD_VERSION}" --depth 1 https://github.com/zhovner/mfdread
     cd /opt/tools/mfdread || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
@@ -76,7 +76,7 @@ function install_proxmark3() {
     colorecho "Compiling proxmark client for generic usage with PLATFORM=PM3OTHER (read https://github.com/RfidResearchGroup/proxmark3/blob/master/doc/md/Use_of_Proxmark/4_Advanced-compilation-parameters.md#platform)"
     colorecho "It can be compiled again for RDV4.0 with 'make clean && make all && make install' from /opt/tools/proxmark3/"
     fapt --no-install-recommends git ca-certificates build-essential pkg-config libreadline-dev gcc-arm-none-eabi libnewlib-dev qtbase5-dev libbz2-dev libbluetooth-dev liblz4-dev
-    git -C /opt/tools/ clone --depth 1 https://github.com/RfidResearchGroup/proxmark3.git
+    git -C /opt/tools/ clone --branch "${PROXMARK3_VERSION}" --depth 1 https://github.com/RfidResearchGroup/proxmark3.git
     cd /opt/tools/proxmark3 || exit
     make clean
     make -j all PLATFORM=PM3OTHER

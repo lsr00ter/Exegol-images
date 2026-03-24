@@ -62,7 +62,7 @@ function install_pyrit() {
 
 function install_wifite2() {
     colorecho "Installing wifite2"
-    git -C /opt/tools/ clone --depth 1 https://github.com/derv82/wifite2.git
+    git -C /opt/tools/ clone --branch "${WIFITE2_VERSION}" --depth 1 https://github.com/derv82/wifite2.git
     cd /opt/tools/wifite2 || exit
     python3 -m venv --system-site-packages ./venv
     catch_and_retry ./venv/bin/python3 setup.py install
@@ -77,7 +77,7 @@ function install_bettercap() {
     colorecho "Installing Bettercap"
     fapt libpcap-dev libusb-1.0-0-dev libnetfilter-queue-dev
     asdf set golang 1.23.0
-    go install -v github.com/bettercap/bettercap/v2@latest
+    go install -v github.com/bettercap/bettercap/v2@${BETTERCAP_VERSION}
     asdf reshim golang
     bettercap -eval "caplets.update; q"
     sed -i 's/set api.rest.username user/set api.rest.username bettercap/g' /usr/local/share/bettercap/caplets/http-ui.cap
@@ -93,7 +93,7 @@ function install_hcxtools() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing hcxtools"
     fapt libpcap-dev libcurl4 libcurl4-openssl-dev libssl-dev openssl pkg-config
-    git -C /tmp clone --depth 1 https://github.com/ZerBea/hcxtools
+    git -C /tmp clone --branch "${HCXTOOLS_VERSION}" --depth 1 https://github.com/ZerBea/hcxtools
     cd /tmp/hcxtools || exit
     make -j
     make install PREFIX=/opt/tools
@@ -107,7 +107,7 @@ function install_hcxdumptool() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing hcxdumptool"
     fapt libpcap-dev libcurl4-openssl-dev
-    git -C /tmp clone --depth 1 https://github.com/ZerBea/hcxdumptool
+    git -C /tmp clone --branch "${HCXDUMPTOOL_VERSION}" --depth 1 https://github.com/ZerBea/hcxdumptool
     cd /tmp/hcxdumptool || exit
     make -j
     make install PREFIX=/opt/tools
