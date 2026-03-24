@@ -517,6 +517,7 @@ function package_base() {
         pip${v} install wheel
     done
     install_pipx
+    set_tool_versions
 
     # change default shell
     chsh -s /bin/zsh
