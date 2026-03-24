@@ -195,8 +195,8 @@ function install_bloodhound-ce() {
     cd "${bloodhoundce_path}/src/" || exit
 
     # Reference: https://github.com/SpecterOps/BloodHound/blob/main/dockerfiles/bloodhound.Dockerfile
-    yarn install
-    yarn build
+    # Must run in zsh subshell with NVM sourced: serialize-javascript needs global crypto (Node 19+)
+    zsh -c "source ~/.zshrc && nvm use default && yarn install && yarn build"
     mkdir -p ./cmd/api/src/api/static/assets
     cp -r ./cmd/ui/dist/. ./cmd/api/src/api/static/assets
 
