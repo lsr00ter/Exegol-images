@@ -291,6 +291,12 @@ function install_neovim() {
 function install_mdcat() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing mdcat"
+    # swsnr/mdcat is archived; only x86_64 prebuilt binary is available (cargo install
+    # is broken: pulldown-cmark-mdcat dependency is yanked on crates.io).
+    if [[ $(uname -m) != 'x86_64' ]]
+    then
+        criticalecho-noexit "mdcat has no prebuilt binary for $(uname -m) and cargo install is broken (archived repo)" && return
+    fi
     local mdcat_version="2.7.1"
     local url="https://github.com/swsnr/mdcat/releases/download/mdcat-${mdcat_version}/mdcat-${mdcat_version}-x86_64-unknown-linux-gnu.tar.gz"
     wget -O /tmp/mdcat.tar.gz "$url"
