@@ -308,16 +308,12 @@ function install_java11() {
     else
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
-    local URL
-    curl --location --silent --fail --output /tmp/openjdk11.json "https://api.github.com/repos/adoptium/temurin11-binaries/releases"
-    URL=$(grep 'browser_download_url.*jdk_'"$ARCH"'_linux.*tar.gz"' /tmp/openjdk11.json | grep -o 'https://[^"]*' | sort | tail -n1)
-    if [[ -z "$URL" ]]; then
-        criticalecho-noexit "Could not find OpenJDK 11 download URL. API response:"
-        cat /tmp/openjdk11.json
-        rm /tmp/openjdk11.json
-        return 1
-    fi
-    rm /tmp/openjdk11.json
+    # Construct direct download URL from pinned version (avoids GitHub API rate limits)
+    # Tag jdk-11.0.30+7 -> URL-encoded jdk-11.0.30%2B7, filename uses 11.0.30_7
+    local version_url_encoded="${OPENJDK11_VERSION//+/%2B}"
+    local version_file
+    version_file=$(echo "${OPENJDK11_VERSION#jdk-}" | tr '+' '_')
+    local URL="https://github.com/adoptium/temurin11-binaries/releases/download/${version_url_encoded}/OpenJDK11U-jdk_${ARCH}_linux_hotspot_${version_file}.tar.gz"
     curl --location --output /tmp/openjdk11-jdk.tar.gz "$URL"
     tar -xzf /tmp/openjdk11-jdk.tar.gz --directory /tmp
     rm /tmp/openjdk11-jdk.tar.gz
