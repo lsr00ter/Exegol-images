@@ -403,22 +403,17 @@ function add_debian_repository_components() {
 function install_asdf() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history
     colorecho "Installing asdf"
-    local URL
-    curl --location --silent --output /tmp/asdf-release.json "https://api.github.com/repos/asdf-vm/asdf/releases/latest"
+    local ARCH
     if [[ $(uname -m) = 'x86_64' ]]
     then
-        URL=$(grep 'browser_download_url.*asdf.*linux-amd64.tar.gz"' /tmp/asdf-release.json | grep -o 'https://[^"]*')
+        ARCH="amd64"
     elif [[ $(uname -m) = 'aarch64' ]]
     then
-        URL=$(grep 'browser_download_url.*asdf.*linux-arm64.tar.gz"' /tmp/asdf-release.json | grep -o 'https://[^"]*')
+        ARCH="arm64"
     else
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
-    if [[ -z "$URL" ]]; then
-        cat /tmp/asdf-release.json
-    fi
-    rm /tmp/asdf-release.json
-    curl --location --output /tmp/asdf.tar.gz "$URL"
+    curl --fail --location --output /tmp/asdf.tar.gz "https://github.com/asdf-vm/asdf/releases/download/${ASDF_VERSION}/asdf-${ASDF_VERSION}-linux-${ARCH}.tar.gz"
     tar -xf /tmp/asdf.tar.gz --directory /tmp
     rm /tmp/asdf.tar.gz
     mv /tmp/asdf /opt/tools/bin/asdf
@@ -427,7 +422,7 @@ function install_asdf() {
     # asdf completions
     mkdir -p "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
     asdf completion zsh > "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf"
-    add-test-command "asdf version"
+    add-test-command "asdf version | grep -q '${ASDF_VERSION}'"
     add-to-list "asdf,https://github.com/asdf-vm/asdf,Extendable version manager with support for ruby python go etc"
 }
 
@@ -505,6 +500,7 @@ function package_base() {
     # Add /etc/bash.d directory to import dynamically any script after /etc/bash.bashrc
     mkdir /etc/bash.d && echo "test -d /etc/bash.d && for f in \$(find -L /etc/bash.d -maxdepth 1 -type f | sort); do source \$f; done" >> /etc/bash.bashrc
 
+    set_tool_versions
     install_asdf
 
     # setup Python environment
@@ -520,7 +516,6 @@ function package_base() {
         pip${v} install wheel
     done
     install_pipx
-    set_tool_versions
 
     # change default shell
     chsh -s /bin/zsh
