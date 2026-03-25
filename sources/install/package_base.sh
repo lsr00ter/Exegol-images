@@ -309,10 +309,13 @@ function install_java11() {
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
     local URL
-    curl --location --silent --output /tmp/openjdk11.json "https://api.github.com/repos/adoptium/temurin11-binaries/releases"
+    curl --location --silent --fail --output /tmp/openjdk11.json "https://api.github.com/repos/adoptium/temurin11-binaries/releases"
     URL=$(grep 'browser_download_url.*jdk_'"$ARCH"'_linux.*tar.gz"' /tmp/openjdk11.json | grep -o 'https://[^"]*' | sort | tail -n1)
     if [[ -z "$URL" ]]; then
+        criticalecho-noexit "Could not find OpenJDK 11 download URL. API response:"
         cat /tmp/openjdk11.json
+        rm /tmp/openjdk11.json
+        return 1
     fi
     rm /tmp/openjdk11.json
     curl --location --output /tmp/openjdk11-jdk.tar.gz "$URL"
