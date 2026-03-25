@@ -177,10 +177,6 @@ function install_bloodhound-ce() {
     mkdir -p "${sharphound_path}"
     mkdir -p "${azurehound_path}"
 
-    local curl_tempfile
-    curl_tempfile=$(mktemp)
-    [[ -f "${curl_tempfile}" ]] || exit
-
     # Installing & Configuring the database
     fapt postgresql postgresql-client
 
@@ -196,11 +192,7 @@ function install_bloodhound-ce() {
     service postgresql stop
 
     # Build BloodHound-CE
-    local latestRelease
-    # Had to output into a tempfile as the Exegol's wrapper for curl breaks stdout
-    curl --location --silent "https://api.github.com/repos/SpecterOps/BloodHound/releases" -o "${curl_tempfile}"
-    latestRelease=$(jq --raw-output 'first(.[] | select(.tag_name | contains("-rc") | not) | .tag_name)' "${curl_tempfile}")
-    git -C "${bloodhoundce_path}" clone --depth 1 --branch "${latestRelease}" "https://github.com/SpecterOps/BloodHound.git" src
+    git -C "${bloodhoundce_path}" clone --depth 1 --branch "${BLOODHOUND_CE_VERSION}" "https://github.com/SpecterOps/BloodHound.git" src
     cd "${bloodhoundce_path}/src/" || exit
 
     # Reference: https://github.com/SpecterOps/BloodHound/blob/main/dockerfiles/bloodhound.Dockerfile
@@ -224,14 +216,10 @@ function install_bloodhound-ce() {
     rm -rf "${bloodhoundce_path}/src/cache" "${bloodhoundce_path}/src/.yarn/cache"
 
     ## SharpHound
-    local sharphound_url
-    local sharphound_name
+    local sharphound_name="SharpHound-${SHARPHOUND_VERSION}.zip"
     local sharphound_name_lowercase
-    curl --location --silent "https://api.github.com/repos/BloodHoundAD/SharpHound/releases/latest" -o "${curl_tempfile}"
-    sharphound_url=$(jq --raw-output '.assets[].browser_download_url | select(contains("debug") | not) | select(contains("sha256") | not)' "${curl_tempfile}")
-    sharphound_name=$(jq --raw-output '.assets[].name | select(contains("debug") | not) | select(contains("sha256") | not)' "${curl_tempfile}")
-    # lowercase fix: https://github.com/ThePorgs/Exegol-images/pull/405
-    sharphound_name_lowercase=$(jq --raw-output '.assets[].name | ascii_downcase | select(contains("debug") | not) | select(contains("sha256") | not)' "${curl_tempfile}")
+    sharphound_name_lowercase=$(echo "${sharphound_name}" | tr '[:upper:]' '[:lower:]')
+    local sharphound_url="https://github.com/SpecterOps/SharpHound/releases/download/${SHARPHOUND_VERSION}/${sharphound_name}"
     wget --directory-prefix "${sharphound_path}" "${sharphound_url}"
     if [[ ! -f "${sharphound_path}/${sharphound_name}" ]]; then
         echo "Error: SharpHound file '${sharphound_name}' was not downloaded successfully to '${sharphound_path}'."
@@ -242,29 +230,17 @@ function install_bloodhound-ce() {
     sha256sum "${sharphound_path}/${sharphound_name_lowercase}" > "${sharphound_path}/${sharphound_name_lowercase}.sha256"
 
     ## AzureHound
-    local azurehound_url_amd64
-    local azurehound_url_amd64_sha256
-    local azurehound_url_arm64
-    local azurehound_url_arm64_sha256
-    local azurehound_version
-    curl --location --silent "https://api.github.com/repos/BloodHoundAD/AzureHound/releases/latest" -o "${curl_tempfile}"
-    azurehound_version=$(jq --raw-output '.tag_name' "${curl_tempfile}")
-    azurehound_url_amd64=$(jq --raw-output '.assets[].browser_download_url | select (endswith("_linux_amd64.zip"))' "${curl_tempfile}")
-    azurehound_url_amd64_sha256=$(jq --raw-output '.assets[].browser_download_url | select (endswith("_linux_amd64.zip.sha256"))' "${curl_tempfile}")
-    azurehound_url_arm64=$(jq --raw-output '.assets[].browser_download_url | select (endswith("_linux_arm64.zip"))' "${curl_tempfile}")
-    azurehound_url_arm64_sha256=$(jq --raw-output '.assets[].browser_download_url | select (endswith("_linux_arm64.zip.sha256"))' "${curl_tempfile}")
-    rm "${curl_tempfile}"
+    local azurehound_amd64_filename="azurehound-${AZUREHOUND_VERSION}_linux_amd64.zip"
+    local azurehound_arm64_filename="azurehound-${AZUREHOUND_VERSION}_linux_arm64.zip"
+    local azurehound_url_amd64="https://github.com/SpecterOps/AzureHound/releases/download/${AZUREHOUND_VERSION}/${azurehound_amd64_filename}"
+    local azurehound_url_amd64_sha256="${azurehound_url_amd64}.sha256"
+    local azurehound_url_arm64="https://github.com/SpecterOps/AzureHound/releases/download/${AZUREHOUND_VERSION}/${azurehound_arm64_filename}"
+    local azurehound_url_arm64_sha256="${azurehound_url_arm64}.sha256"
     wget --directory-prefix "${azurehound_path}" "${azurehound_url_amd64}"
-    # Extract filename from URL for AMD64
-    local azurehound_amd64_filename
-    azurehound_amd64_filename=$(basename "${azurehound_url_amd64}")
     wget --directory-prefix "${azurehound_path}" "${azurehound_url_amd64_sha256}"
     [[ -f "${azurehound_path}/${azurehound_amd64_filename}" ]] || exit
     [[ -f "${azurehound_path}/${azurehound_amd64_filename}.sha256" ]] || exit
 
-    # Extract filename from URL for ARM64
-    local azurehound_arm64_filename
-    azurehound_arm64_filename=$(basename "${azurehound_url_arm64}")
     wget --directory-prefix "${azurehound_path}" "${azurehound_url_arm64}"
     wget --directory-prefix "${azurehound_path}" "${azurehound_url_arm64_sha256}"
     [[ -f "${azurehound_path}/${azurehound_arm64_filename}" ]] || exit

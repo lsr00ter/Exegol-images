@@ -31,7 +31,7 @@ fi
 
 # Verify if necessary tools are installed
 for cmd in curl awk gpg; do
-    if ! command -v "$cmd" &> /dev/null; then		
+    if ! command -v "$cmd" &> /dev/null; then
         echo "$cmd could not be found, installing..."
 		"${INSTALLER[@]}" "$cmd"
     fi
@@ -96,22 +96,16 @@ DxkLsLOBBZZRXOrgxit+tAqinGJ6N9hOvkUlwTLfJM1tpCEFb/Z786g=
 EOF
 
 # Download and Unpack Sliver Server
-echo "Fetching latest Sliver release URLs..."
-ARTIFACTS=$(curl -s "https://api.github.com/repos/BishopFox/sliver/releases" | grep 1.5.44 | awk -F '"' '/browser_download_url/{print $4}')
+SLIVER_INSTALL_VERSION="v1.5.44"
 SLIVER_SERVER="sliver-server_linux"
 SLIVER_CLIENT="sliver-client_linux"
+SLIVER_BASE_URL="https://github.com/BishopFox/sliver/releases/download/${SLIVER_INSTALL_VERSION}"
 
-for URL in $ARTIFACTS
-do
-    if [[ "$URL" == *"$SLIVER_SERVER"* ]]; then
-        echo "Downloading $URL"
-        curl --silent -L "$URL" --output "$(basename "$URL")"
-    fi
-    if [[ "$URL" == *"$SLIVER_CLIENT"* ]]; then
-        echo "Downloading $URL"
-        curl --silent -L "$URL" --output "$(basename "$URL")"
-    fi
-done
+echo "Downloading Sliver ${SLIVER_INSTALL_VERSION}..."
+curl --silent -L "${SLIVER_BASE_URL}/${SLIVER_SERVER}" --output "/tmp/${SLIVER_SERVER}"
+curl --silent -L "${SLIVER_BASE_URL}/${SLIVER_SERVER}.sig" --output "/tmp/${SLIVER_SERVER}.sig"
+curl --silent -L "${SLIVER_BASE_URL}/${SLIVER_CLIENT}" --output "/tmp/${SLIVER_CLIENT}"
+curl --silent -L "${SLIVER_BASE_URL}/${SLIVER_CLIENT}.sig" --output "/tmp/${SLIVER_CLIENT}.sig"
 
 # Signature verification
 echo "Verifying signatures ..."

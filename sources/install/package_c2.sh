@@ -89,8 +89,8 @@ function install_sliver() {
     else
         criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
     fi
-    server_url=$(curl --location --silent "https://api.github.com/repos/BishopFox/sliver/releases/latest" | grep 'browser_download_url.*sliver-server.*linux.*'"$arch"'"' | grep -o 'https://[^"]*')
-    client_url=$(curl --location --silent "https://api.github.com/repos/BishopFox/sliver/releases/latest" | grep 'browser_download_url.*sliver-client.*linux.*'"$arch"'"' | grep -o 'https://[^"]*')
+    server_url="https://github.com/BishopFox/sliver/releases/download/${SLIVER_VERSION}/sliver-server_linux-${arch}"
+    client_url="https://github.com/BishopFox/sliver/releases/download/${SLIVER_VERSION}/sliver-client_linux-${arch}"
     curl --location -o /tmp/sliver-server "$server_url"
     curl --location -o /tmp/sliver-client "$client_url"
     chmod +x /tmp/sliver-server
