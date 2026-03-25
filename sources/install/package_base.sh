@@ -92,7 +92,7 @@ function install_pyenv() {
     # CODE-CHECK-WHITELIST=add-aliases,add-history,add-to-list
     colorecho "Installing pyenv"
     fapt git curl build-essential
-    curl -o /tmp/pyenv.run https://pyenv.run
+    curl -sSfL -o /tmp/pyenv.run https://pyenv.run
     bash /tmp/pyenv.run
     set_python_env
     local v
