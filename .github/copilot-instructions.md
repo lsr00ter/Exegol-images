@@ -93,7 +93,7 @@ TOOL_VERSION="v1.2.3"
      Unpinned = install calls in package_*.sh that lack a version pin.
      Recalculate the total and percentage after every change. -->
 
-**231** / **397** versionable installs pinned (**58%**)
+**233** / **397** versionable installs pinned (**58%**)
 
 | Unpinned pattern | Count | How to pin |
 |------------------|------:|------------|
