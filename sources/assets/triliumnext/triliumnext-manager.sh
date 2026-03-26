@@ -39,7 +39,9 @@ function start_app() {
   done
 
   echo "Application failed to start in time (after $TIMEOUT seconds)..."
-  kill -SIGINT $(pgrep -f 'node /opt/tools/triliumnext/node_modules/.bin/cross-env') 2>/dev/null
+  local pids
+  pids=$(lsof -Pi :"$PORT" -sTCP:LISTEN -t 2>/dev/null)
+  [[ -n "$pids" ]] && kill -9 $pids 2>/dev/null
   kill -9 "$NODE_PID" 2>/dev/null
   echo "Starting logs:"
   cat "$log_file"
@@ -62,7 +64,11 @@ function test_app() {
   while [ $TIME_ELAPSED -lt $TIMEOUT ]; do
     if lsof -Pi :"$PORT" -sTCP:LISTEN -t >/dev/null ; then
       echo "TriliumNext started successfully, stopping now..."
-      kill -SIGINT $(pgrep -f 'node /opt/tools/triliumnext/node_modules/.bin/cross-env') 2>/dev/null
+      local pids
+      pids=$(lsof -Pi :"$PORT" -sTCP:LISTEN -t)
+      kill -SIGTERM $pids 2>/dev/null
+      sleep 2
+      [[ -n "$(lsof -Pi :"$PORT" -sTCP:LISTEN -t 2>/dev/null)" ]] && kill -9 $(lsof -Pi :"$PORT" -sTCP:LISTEN -t) 2>/dev/null
       exit 0
     fi
 
@@ -72,7 +78,9 @@ function test_app() {
   done
 
   echo "Application failed to start in time (after $TIMEOUT seconds)..."
-  kill -SIGINT $(pgrep -f 'node /opt/tools/triliumnext/node_modules/.bin/cross-env') 2>/dev/null
+  local pids
+  pids=$(lsof -Pi :"$PORT" -sTCP:LISTEN -t 2>/dev/null)
+  [[ -n "$pids" ]] && kill -9 $pids 2>/dev/null
   kill -9 "$NODE_PID" 2>/dev/null
   exit 1
 }
@@ -80,17 +88,25 @@ function test_app() {
 # Function to stop the application
 function stop_app() {
   get_config_values
-  if lsof -Pi :"$PORT" -s TCP:LISTEN -t >/dev/null ; then
+  if lsof -Pi :"$PORT" -sTCP:LISTEN -t >/dev/null ; then
     echo "TriliumNext is running on http://$HOST:$PORT, stopping now..."
-    kill -SIGINT $(pgrep -f 'node /opt/tools/triliumnext/node_modules/.bin/cross-env') 2>/dev/null
-    sleep 2
+    # Use lsof to find the actual PIDs listening on the port (more reliable than pgrep pattern matching)
+    local pids
+    pids=$(lsof -Pi :"$PORT" -sTCP:LISTEN -t)
+    kill -SIGTERM $pids 2>/dev/null
+    sleep 3
     if lsof -Pi :"$PORT" -sTCP:LISTEN -t >/dev/null ; then
-      echo "Something went wrong, TriliumNext still runs"
-      exit 1
-    else
-      echo "TriliumNext stopped."
-      exit 0
+      echo "Graceful shutdown failed, force killing..."
+      pids=$(lsof -Pi :"$PORT" -sTCP:LISTEN -t)
+      kill -9 $pids 2>/dev/null
+      sleep 1
+      if lsof -Pi :"$PORT" -sTCP:LISTEN -t >/dev/null ; then
+        echo "Something went wrong, TriliumNext still runs"
+        exit 1
+      fi
     fi
+    echo "TriliumNext stopped."
+    exit 0
   else
     echo "Application is not running..."
   fi
