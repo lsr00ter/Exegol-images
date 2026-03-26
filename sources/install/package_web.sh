@@ -94,7 +94,7 @@ function install_kiterunner() {
 function install_amass() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing Amass"
-    go install -v github.com/owasp-amass/amass/v3/...@${AMASS_VERSION}
+    go install -v github.com/owasp-amass/amass/v5/...@${AMASS_VERSION}
     asdf reshim golang
     add-history amass
     add-test-command "amass -version"
@@ -637,9 +637,19 @@ function install_feroxbuster() {
     colorecho "Installing feroxbuster"
     mkdir /opt/tools/feroxbuster
     cd /opt/tools/feroxbuster || exit
-    # splitting curl | bash to avoid having additional logs put in curl output being executed because of catch_and_retry
-    curl -sL https://raw.githubusercontent.com/epi052/feroxbuster/master/install-nix.sh -o /tmp/install-feroxbuster.sh
-    bash /tmp/install-feroxbuster.sh
+    local arch_prefix
+    if [[ $(uname -m) = 'x86_64' ]]; then
+        arch_prefix="x86_64"
+    elif [[ $(uname -m) = 'aarch64' ]]; then
+        arch_prefix="aarch64"
+    else
+        criticalecho-noexit "This installation function doesn't support architecture $(uname -m)" && return
+    fi
+    local zip_name="${arch_prefix}-linux-feroxbuster.zip"
+    wget "https://github.com/epi052/feroxbuster/releases/download/${FEROXBUSTER_VERSION}/${zip_name}" -O "/tmp/${zip_name}"
+    unzip -o "/tmp/${zip_name}" -d /opt/tools/feroxbuster
+    rm "/tmp/${zip_name}"
+    chmod +x /opt/tools/feroxbuster/feroxbuster
     # Adding a symbolic link in order for autorecon to be able to find the Feroxbuster binary
     ln -v -s /opt/tools/feroxbuster/feroxbuster /opt/tools/bin/feroxbuster
     add-aliases feroxbuster
