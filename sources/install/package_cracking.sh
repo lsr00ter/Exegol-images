@@ -60,7 +60,14 @@ function install_haiti() {
 function install_geowordlists() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing GeoWordlists"
-    pipx install --system-site-packages git+https://github.com/p0dalirius/GeoWordlists@${GEOWORDLISTS_VERSION}
+    git -C /opt/tools/ clone --branch "${GEOWORDLISTS_VERSION}" --depth 1 https://github.com/p0dalirius/GeoWordlists
+    # Upstream pyproject.toml at 1.0.1 is missing [project.scripts], causing pipx to fail
+    # with "No apps associated with package". Fixed on main (3c4487b) but unreleased.
+    # TODO: remove this patch once a new release includes the fix.
+    if ! grep -q '\[project\.scripts\]' /opt/tools/GeoWordlists/pyproject.toml; then
+        printf '\n[project.scripts]\ngeowordlists = "geowordlists.__main__:main"\n' >> /opt/tools/GeoWordlists/pyproject.toml
+    fi
+    pipx install --system-site-packages /opt/tools/GeoWordlists/
     add-history geowordlists
     add-test-command "geowordlists --help"
     add-to-list "geowordlists,https://github.com/p0dalirius/GeoWordlists,tool to generate wordlists of passwords containing cities at a defined distance around the client city."
