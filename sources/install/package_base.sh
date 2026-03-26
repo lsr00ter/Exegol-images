@@ -263,7 +263,7 @@ function install_mdcat() {
     # CODE-CHECK-WHITELIST=add-aliases
     colorecho "Installing mdcat"
     source "$HOME/.cargo/env"
-    cargo install mdcat --locked
+    cargo install mdcat --locked --version "${MDCAT_VERSION}"
     add-history mdcat
     add-test-command "mdcat --version"
     add-to-list "mdcat,https://github.com/swsnr/mdcat,Fancy cat for Markdown"
