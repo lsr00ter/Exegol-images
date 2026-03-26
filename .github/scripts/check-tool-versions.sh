@@ -117,7 +117,7 @@ cat <<EOF
 ## Tool Version Updates Available
 
 **${UPDATE_COUNT}** tool(s) have newer versions available.
-${ERROR_COUNT:+*${ERROR_COUNT} tool(s) failed to check.*}
+$(if (( ERROR_COUNT > 0 )); then echo "*${ERROR_COUNT} tool(s) failed to check.*"; fi)
 
 | Tool | Source | Current | Latest |
 |------|--------|---------|--------|

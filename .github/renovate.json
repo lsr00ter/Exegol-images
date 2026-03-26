@@ -28,11 +28,11 @@
       "groupName": "docker-base-images"
     },
     {
-      "description": "Group all Go tool updates",
+      "description": "Group all GitHub-sourced tool updates",
       "matchManagers": ["custom.regex"],
       "matchDatasources": ["github-releases", "github-tags"],
       "matchFileNames": ["sources/install/tool-versions.env"],
-      "groupName": "go-tools",
+      "groupName": "github-tools",
       "schedule": ["before 6am on monday"]
     },
     {
