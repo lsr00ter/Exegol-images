@@ -230,8 +230,8 @@ function install_bloodhound-ce() {
     sha256sum "${sharphound_path}/${sharphound_name_lowercase}" > "${sharphound_path}/${sharphound_name_lowercase}.sha256"
 
     ## AzureHound
-    local azurehound_amd64_filename="azurehound-${AZUREHOUND_VERSION}_linux_amd64.zip"
-    local azurehound_arm64_filename="azurehound-${AZUREHOUND_VERSION}_linux_arm64.zip"
+    local azurehound_amd64_filename="AzureHound_${AZUREHOUND_VERSION}_linux_amd64.zip"
+    local azurehound_arm64_filename="AzureHound_${AZUREHOUND_VERSION}_linux_arm64.zip"
     local azurehound_url_amd64="https://github.com/SpecterOps/AzureHound/releases/download/${AZUREHOUND_VERSION}/${azurehound_amd64_filename}"
     local azurehound_url_amd64_sha256="${azurehound_url_amd64}.sha256"
     local azurehound_url_arm64="https://github.com/SpecterOps/AzureHound/releases/download/${AZUREHOUND_VERSION}/${azurehound_arm64_filename}"
@@ -246,9 +246,9 @@ function install_bloodhound-ce() {
     [[ -f "${azurehound_path}/${azurehound_arm64_filename}" ]] || exit
     [[ -f "${azurehound_path}/${azurehound_arm64_filename}.sha256" ]] || exit
     (cd "${azurehound_path}"; sha256sum --check --warn ./*.sha256) || exit
-    7z a -tzip -mx9 "${azurehound_path}/azurehound-${azurehound_version}.zip" "${azurehound_path}/azurehound-*"
+    7z a -tzip -mx9 "${azurehound_path}/azurehound-${AZUREHOUND_VERSION}.zip" "${azurehound_path}/AzureHound_*"
     # Upstream does not provide a sha256 file for the archive to check the integrity
-    sha256sum "${azurehound_path}/azurehound-${azurehound_version}.zip" > "${azurehound_path}/azurehound-${azurehound_version}.zip.sha256"
+    sha256sum "${azurehound_path}/azurehound-${AZUREHOUND_VERSION}.zip" > "${azurehound_path}/azurehound-${AZUREHOUND_VERSION}.zip.sha256"
 
     # Files and directories
     # work directory required by bloodhound
