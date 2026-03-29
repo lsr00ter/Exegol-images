@@ -295,7 +295,10 @@ function install_spiderfoot() {
     cd /opt/tools/spiderfoot || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
-    pip3 install -r requirements.txt
+    # Old PyYAML releases used by SpiderFoot fail to build with Cython 3.x.
+    # Apply a temporary build constraint so pip's isolated build env stays compatible.
+    printf '%s\n' 'Cython<3' >/tmp/spiderfoot-build-constraints.txt
+    PIP_CONSTRAINT=/tmp/spiderfoot-build-constraints.txt pip3 install -r requirements.txt
     deactivate
     add-aliases spiderfoot
     add-history spiderfoot
