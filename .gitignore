@@ -113,3 +113,4 @@ shared-resources/
 # macOS files
 .DS_Store
 .claude
+.*_tmp
