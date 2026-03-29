@@ -394,7 +394,7 @@ function install_cloudfail() {
 
 function install_eyewitness() {
     colorecho "Installing EyeWitness"
-    git -C /opt/tools/ clone --branch "${EYEWITNESS_VERSION}" --depth 1 https://github.com/FortyNorthSecurity/EyeWitness
+    git -C /opt/tools/ clone --depth 1 https://github.com/FortyNorthSecurity/EyeWitness
     cd /opt/tools/EyeWitness || exit
     fapt jq cmake xvfb chromium chromium-driver
     python3 -m venv --system-site-packages ./venv

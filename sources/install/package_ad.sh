@@ -1308,7 +1308,7 @@ function install_extractbitlockerkeys() {
 
 function install_LDAPWordlistHarvester() {
     colorecho "Installing LDAPWordlistHarvester"
-    git -C /opt/tools/ clone --branch "${PYLDAPWORDLISTHARVESTER_VERSION}" --depth 1 https://github.com/p0dalirius/pyLDAPWordlistHarvester
+    git -C /opt/tools/ clone --depth 1 https://github.com/p0dalirius/pyLDAPWordlistHarvester
     cd /opt/tools/pyLDAPWordlistHarvester || exit
     python3 -m venv --system-site-packages ./venv
     source ./venv/bin/activate
